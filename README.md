@@ -37,3 +37,4 @@ If the above doesn't work and you are on mac, try installing docker from the web
 
 Then if you open the docker application before going to the terminal and running `docker-compose up` it should work.
 
+You can also set docker to start on start up minimised if you don't want to have to open it every time by going into the docker settings, general, start docker desktop when you sign into your computer. Untick open docker dashboard when docker starts if you want it to start minimised. 
