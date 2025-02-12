@@ -30,3 +30,10 @@ If you don't want to type your password in every time you run docker then run th
 `sudo usermod -aG docker $USER`
 
 Once you've done this, you should be able to run docker with `docker-compose up` instead of `sudo docker-compose up`, don't forget to change the alias if you do this.
+
+### Running on Mac
+
+If the above doesn't work and you are on mac, try installing docker from the website or using homebrew `brew install --cask docker`
+
+Then if you open the docker application before going to the terminal and running `docker-compose up` it should work.
+
