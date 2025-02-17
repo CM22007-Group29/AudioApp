@@ -42,7 +42,7 @@ jobs:
       - name: Comment summary
         uses: peter-evans/create-or-update-comment@v4
         with:
-          issue-number: ${{ github.event.pull_request.number }}
+          issue-number: ${{ github.event.number }}
           body: |
             Passed: ${{ env.passed }}
             Failed: ${{ env.failed }}
