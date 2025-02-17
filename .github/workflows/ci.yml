@@ -39,14 +39,14 @@ jobs:
           COVERAGE=$(grep -oP '<span class="pc_cov">\K[0-9]+' backend/htmlcov/index.html)
           echo "coverage=$COVERAGE" >> "$GITHUB_ENV"
 
-          echo "Pull Request Number: ${{ github.event.pull_request.number }}"
-          echo "Pull Request Number: ${{ github.event.number }}"
-          echo "Issue Number: ${{ github.event.issue.number }}"
-
       - name: Comment summary
+        uses: jwalton/gh-find-current-pr@master
+          id: findPr
+          with:
+            state: open
         uses: peter-evans/create-or-update-comment@v4
         with:
-          issue-number: ${{ github.event.number }}
+          issue-number: ${{  steps.findPr.outputs.pr }}
           body: |
             Passed: ${{ env.passed }}
             Failed: ${{ env.failed }}
