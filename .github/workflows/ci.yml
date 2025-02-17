@@ -39,7 +39,7 @@ jobs:
           COVERAGE=$(grep -oP '<span class="pc_cov">\K[0-9]+' backend/htmlcov/index.html)
           echo "coverage=$COVERAGE" >> "$GITHUB_ENV"
 
-          if [[ "${{ env.failed }}" -ne 0 ]]; then
+          if [[ "$TESTS_FAILED" -ne 0 ]]; then
             echo "Some tests failed! Failing workflow."
             exit 1
           fi
