@@ -36,12 +36,19 @@ jobs:
            
           TESTS_FAILED=$(grep -oP '<span class="failed">\K[0-9]+' backend/reports/test_report.html)
           echo "failed=$TESTS_FAILED" >> "$GITHUB_ENV"
+
+          ERRORS=$(grep -oP '<span class="error">\K[0-9]+' backend/reports/test_report.html)
+          echo "errors=$ERRORS" >> "$GITHUB_ENV"
            
           COVERAGE=$(grep -oP '<span class="pc_cov">\K[0-9]+' backend/htmlcov/index.html)
           echo "coverage=$COVERAGE" >> "$GITHUB_ENV"
 
           if [[ "$TESTS_FAILED" -ne 0 ]]; then
             echo "Some tests failed! Failing workflow."
+            exit 1
+          fi
+          if [[ "$ERRORS" -ne 0 ]]; then
+            echo "An error occurred! Failing workflow."
             exit 1
           fi
            

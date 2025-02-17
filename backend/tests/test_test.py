@@ -1,5 +1,3 @@
-import example_module
-
 def test_true():
     assert True == True
 
