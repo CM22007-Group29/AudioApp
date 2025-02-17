@@ -67,8 +67,8 @@ jobs:
           path: backend/reports/
 
       - name: Job Summary
-        run: echo '### Testing Summary 🚀' >> $GITHUB_STEP_SUMMARY
         run: |
+          echo '### Testing Summary 🚀' >> $GITHUB_STEP_SUMMARY
           echo '✅ Passed:   ${{ env.passed }}' >> $GITHUB_STEP_SUMMARY
           echo '❌ Failed:   ${{ env.failed }}' >> $GITHUB_STEP_SUMMARY
           echo '🤓 Coverage: ${{ env.coverage }}%' >> $GITHUB_STEP_SUMMARY
