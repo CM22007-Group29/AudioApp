@@ -39,11 +39,13 @@ jobs:
           COVERAGE=$(grep -oP '<span class="pc_cov">\K[0-9]+' backend/htmlcov/index.html)
           echo "coverage=$COVERAGE" >> "$GITHUB_ENV"
 
-      - name: Comment summary
+      - name: Get PR Number
         uses: jwalton/gh-find-current-pr@master
           id: findPr
           with:
             state: open
+
+      - name: Comment summary
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{  steps.findPr.outputs.pr }}
