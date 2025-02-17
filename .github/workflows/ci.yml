@@ -27,7 +27,6 @@ jobs:
           sleep 10  # Wait for services to start
 
       - name: Run backend tests
-        continue-on-error: true
         run: |
           docker compose -f docker-compose.test.yml up --build
            
@@ -68,18 +67,21 @@ jobs:
 #            Coverage: ${{ env.coverage }}%
 
       - name: Upload Coverage Report as Artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: backend/htmlcov/
 
       - name: Upload Test Report as Artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: backend/reports/
 
       - name: Job Summary
+        if: always()
         run: |
           echo '### Testing Summary 🚀' >> $GITHUB_STEP_SUMMARY
           echo '✅ Passed:   ${{ env.passed }}' >> $GITHUB_STEP_SUMMARY
@@ -87,4 +89,5 @@ jobs:
           echo '🤓 Coverage: ${{ env.coverage }}%' >> $GITHUB_STEP_SUMMARY
 
       - name: Stop containers
+        if: always()
         run: docker compose -f docker-compose.test.yml down
