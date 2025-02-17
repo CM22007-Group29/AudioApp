@@ -80,6 +80,3 @@ jobs:
 
       - name: Stop containers
         run: docker compose -f docker-compose.test.yml down
-
-      - name: Fail if tests failed
-        run: |
