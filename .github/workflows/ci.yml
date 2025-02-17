@@ -27,31 +27,30 @@ jobs:
           sleep 10  # Wait for services to start
 
       - name: Run backend tests
-        run: docker compose -f docker-compose.test.yml up --build
-
-      - name: Generate job summary
         run: |
-          # Collect the test results and coverage information
-          TEST_REPORT_PATH="./backend/reports/test_report.html"
-          if [ -f "$TEST_REPORT_PATH" ]; then
-            echo "Test report generated: $TEST_REPORT_PATH"
-          else
-            echo "Test report not found!" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          fi
-          
-          # Add a summary of test results to the GitHub Actions job summary
-          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
-          echo "Test results are available in the [HTML report](./backend/reports/test_report.html)." >> $GITHUB_STEP_SUMMARY
-          
-          # Optionally, you can print coverage summary to the job summary:
-          echo "## Coverage Results" >> $GITHUB_STEP_SUMMARY
-          echo "Coverage reports are available in the [HTML coverage report](./backend/htmlcov/index.html)." >> $GITHUB_STEP_SUMMARY
+          docker compose -f docker-compose.test.yml up --build
+          TESTS_PASSED=$(grep -oP '<span class="passed">\K[0-9]+' ./backend/reports/test-report.html)
+          echo $TESTS_PASSED
+          echo "version=$TESTS_PASSED" >> "$GITHUB_ENV"
+
+
+      - name: Find Previous Comment
+        id: find-comment
+        uses: peter-evans/find-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: 'github-actions'
+      
+      - name: Delete Previous Comment (if exists)
+        if: steps.find-comment.outputs.comment-id != ''
+        uses: peter-evans/delete-comment@v3
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
 
       - name: Comment summary
         uses: peter-evans/create-or-update-comment@v4
         with:
-          issue-number: 1
+          issue-number: ${{ github.event.pull_request.number }}
           body: |
             This is a multi-line test comment
             - With GitHub **Markdown** :sparkles:
