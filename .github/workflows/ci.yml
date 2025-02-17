@@ -36,7 +36,7 @@ jobs:
           TESTS_FAILED=$(grep -oP '<span class="failed">\K[0-9]+' backend/reports/test_report.html)
           echo "failed=$TESTS_FAILED" >> "$github_env"
            
-          COVERAGE=$(grep -oP '<span class="pc_cov">\K[0-9]+' backend/htmlcov.html)
+          COVERAGE=$(grep -oP '<span class="pc_cov">\K[0-9]+' backend/htmlcov/index.html)
           echo "coverage=$COVERAGE" >> "$github_env"
 
       - name: Comment summary
