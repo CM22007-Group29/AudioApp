@@ -1,7 +1,7 @@
 services:
-  web:
-    build: .
-    command: python -u main.py
+  backend:
+    build: backend
+    command: python -u ./backend/main.py
     ports:
       - "4040:4040"
     volumes:
