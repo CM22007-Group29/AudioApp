@@ -4,7 +4,8 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     volumes:
+      - ./backend/reports:/main/reports
       - ./backend/htmlcov:/main/htmlcov
     command: >
-      sh -c "coverage run -m --source=. pytest tests/ || true && coverage report -m && coverage html"
+      sh -c "coverage run -m --source=. pytest --html=/main/reports/test_report.html tests/ || true && coverage report -m && coverage html"
 

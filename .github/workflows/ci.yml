@@ -28,11 +28,36 @@ jobs:
       - name: Run backend tests
         run: docker compose -f docker-compose.test.yml up --build
 
+      - name: Generate job summary
+        run: |
+          # Collect the test results and coverage information
+          TEST_REPORT_PATH="./backend/reports/test_report.html"
+          if [ -f "$TEST_REPORT_PATH" ]; then
+            echo "Test report generated: $TEST_REPORT_PATH"
+          else
+            echo "Test report not found!" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          
+          # Add a summary of test results to the GitHub Actions job summary
+          echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "Test results are available in the [HTML report](./backend/reports/test_report.html)." >> $GITHUB_STEP_SUMMARY
+          
+          # Optionally, you can print coverage summary to the job summary:
+          echo "## Coverage Results" >> $GITHUB_STEP_SUMMARY
+          echo "Coverage reports are available in the [HTML coverage report](./backend/htmlcov/index.html)." >> $GITHUB_STEP_SUMMARY
+
       - name: Upload Coverage Report as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: backend/htmlcov/
+
+      - name: Upload Test Report as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: backend/reports/
 
       - name: Stop containers
         run: docker compose -f docker-compose.test.yml down
