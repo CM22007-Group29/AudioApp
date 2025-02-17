@@ -33,20 +33,6 @@ jobs:
           echo $TESTS_PASSED
           echo "version=$TESTS_PASSED" >> "$GITHUB_ENV"
 
-
-      - name: Find Previous Comment
-        id: find-comment
-        uses: peter-evans/find-comment@v3
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          comment-author: 'github-actions'
-      
-      - name: Delete Previous Comment (if exists)
-        if: steps.find-comment.outputs.comment-id != ''
-        uses: peter-evans/delete-comment@v3
-        with:
-          comment-id: ${{ steps.find-comment.outputs.comment-id }}
-
       - name: Comment summary
         uses: peter-evans/create-or-update-comment@v4
         with:
