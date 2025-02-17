@@ -1,0 +1,38 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and run containers
+        run: |
+          docker-compose -f docker-compose.test.yml up -d --build
+          sleep 10  # Wait for services to start
+
+      - name: Run backend tests
+        run: docker exec backend coverage run -m pytest tests/
+        run: docker exec backend coverage html
+
+        #TODO: upload coverage report
+
+#      - name: Run frontend tests
+#        run: docker exec frontend npm test -- --watchAll=false
+
+      - name: Stop containers
+        run: docker-compose -f docker-compose.test.yml down
