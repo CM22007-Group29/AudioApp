@@ -29,25 +29,24 @@ jobs:
       - name: Run backend tests
         run: |
           docker compose -f docker-compose.test.yml up --build
-          ls
-          cd backend
-          ls
-          cd ../
-          TESTS_PASSED=$(grep -oP '<span class="passed">\K[0-9]+' ./backend/reports/test-report.html)
-          echo $TESTS_PASSED
-          echo "version=$TESTS_PASSED" >> "$GITHUB_ENV"
+           
+          TESTS_PASSED=$(grep -oP '<span class="passed">\K[0-9]+' backend/reports/test_report.html)
+          echo "passed=$TESTS_PASSED" >> "$GITHUB_ENV"
+           
+          TESTS_FAILED=$(grep -oP '<span class="failed">\K[0-9]+' backend/reports/test_report.html)
+          echo "failed=$TESTS_FAILED" >> "$github_env"
+           
+          COVERAGE=$(grep -oP '<span class="pc_cov">\K[0-9]+' backend/htmlcov.html)
+          echo "coverage=$COVERAGE" >> "$github_env"
 
       - name: Comment summary
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            This is a multi-line test comment
-            - With GitHub **Markdown** :sparkles:
-            - Created by [create-or-update-comment][1]
-
-            [1]: https://github.com/peter-evans/create-or-update-comment
-          reactions: '+1'
+            Passed: ${{ env.passed }}
+            Failed: ${{ env.failed }}
+            Coverage: ${{ env.coverage }}
 
       - name: Upload Coverage Report as Artifact
         uses: actions/upload-artifact@v4
