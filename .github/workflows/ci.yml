@@ -41,7 +41,7 @@ jobs:
 
       - name: Get PR Number
         uses: jwalton/gh-find-current-pr@master
-          id: findPr
+        id: findPr
         with:
           state: open
 
