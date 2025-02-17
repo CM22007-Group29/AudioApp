@@ -42,13 +42,13 @@ jobs:
       - name: Get PR Number
         uses: jwalton/gh-find-current-pr@master
           id: findPr
-          with:
-            state: open
+        with:
+          state: open
 
       - name: Comment summary
         uses: peter-evans/create-or-update-comment@v4
         with:
-          issue-number: ${{  steps.findPr.outputs.pr }}
+          issue-number: ${{ steps.findPr.outputs.pr }}
           body: |
             Passed: ${{ env.passed }}
             Failed: ${{ env.failed }}
