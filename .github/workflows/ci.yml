@@ -29,6 +29,10 @@ jobs:
       - name: Run backend tests
         run: |
           docker compose -f docker-compose.test.yml up --build
+          ls
+          cd backend
+          ls
+          cd ../
           TESTS_PASSED=$(grep -oP '<span class="passed">\K[0-9]+' ./backend/reports/test-report.html)
           echo $TESTS_PASSED
           echo "version=$TESTS_PASSED" >> "$GITHUB_ENV"
