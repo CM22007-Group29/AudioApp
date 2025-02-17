@@ -34,10 +34,10 @@ jobs:
           echo "passed=$TESTS_PASSED" >> "$GITHUB_ENV"
            
           TESTS_FAILED=$(grep -oP '<span class="failed">\K[0-9]+' backend/reports/test_report.html)
-          echo "failed=$TESTS_FAILED" >> "$github_env"
+          echo "failed=$TESTS_FAILED" >> "$GITHUB_ENV"
            
           COVERAGE=$(grep -oP '<span class="pc_cov">\K[0-9]+' backend/htmlcov/index.html)
-          echo "coverage=$COVERAGE" >> "$github_env"
+          echo "coverage=$COVERAGE" >> "$GITHUB_ENV"
 
       - name: Comment summary
         uses: peter-evans/create-or-update-comment@v4
@@ -46,7 +46,7 @@ jobs:
           body: |
             Passed: ${{ env.passed }}
             Failed: ${{ env.failed }}
-            Coverage: ${{ env.coverage }}
+            Coverage: ${{ env.coverage }}%
 
       - name: Upload Coverage Report as Artifact
         uses: actions/upload-artifact@v4
