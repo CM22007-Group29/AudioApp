@@ -30,6 +30,10 @@ class AudioProcessingService:
         return self.audio
 
     def processAudio(self, timestamps=[]):
+        """
+        Process the audio based on the provided timestamps.
+        Carry out other processing steps here. (e.g., noise reduction, volume normalization)
+        """
         if timestamps:
             return self.cutAudio(timestamps)
         return self.audio
