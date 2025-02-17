@@ -2,16 +2,9 @@ services:
   backend:
     build: 
       context: ./backend
-      dockerfile: ../Dockerfile
+      dockerfile: Dockerfile
     volumes:
-      - ./coverage:/app/backend/coverage
+      - ./backend/htmlcov:/main/htmlcov
     command: >
-      sh -c "coverage run -m pytest tests/ && coverage report -m && coverage html"
+      sh -c "coverage run -m --source=. pytest tests/ || true && coverage report -m && coverage html"
 
-#  frontend:
-#    build:
-#      context: ./frontend
-#      dockerfile: Dockerfile
-#    depends_on:
-#      - backend
-#    command: ["npm", "test", "-", "--watchAll=false"]

@@ -1,3 +1,5 @@
+import example_module
+
 def test_true():
     assert True == True
 
@@ -6,3 +8,6 @@ def test_false():
 
 def test_true_false():
     assert True == False
+
+def test_module():
+    example_module.my_function()

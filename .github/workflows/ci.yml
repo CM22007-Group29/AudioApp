@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - develop
   pull_request:
     branches:
       - main
@@ -26,13 +25,13 @@ jobs:
           sleep 10  # Wait for services to start
 
       - name: Run backend tests
-        run: docker exec backend coverage run -m pytest tests/
-        run: docker exec backend coverage html
+        run: docker-compose -f docker-compose.test.yml up --build
 
-        #TODO: upload coverage report
-
-#      - name: Run frontend tests
-#        run: docker exec frontend npm test -- --watchAll=false
+      - name: Upload Coverage Report as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: backend/htmlcov/
 
       - name: Stop containers
         run: docker-compose -f docker-compose.test.yml down
