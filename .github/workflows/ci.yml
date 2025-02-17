@@ -34,4 +34,4 @@ jobs:
           path: backend/htmlcov/
 
       - name: Stop containers
-        run: docker-compose -f docker-compose.test.yml down
+        run: docker compose -f docker-compose.test.yml down
