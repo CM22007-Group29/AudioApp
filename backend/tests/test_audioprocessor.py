@@ -8,7 +8,8 @@ from AudioFile import Audio
 from AudioProcessor import AudioProcessingService
 
 def test_audioprocessor():
-    path = 'backend/tests/test1.mp3'
+    # path = 'backend/tests/audio_input.mp3'
+    path = 'tests/audio_input.mp3'
     # Create an Audio instance
     audioFile = Audio(path)
     print("Input file duration: ", audioFile.getDuration())
@@ -21,4 +22,5 @@ def test_audioprocessor():
     print("Processed file duration: ", processor.audio.duration_seconds)
 
     # Save the processed audio using the processor's method
-    processor.saveFile('backend/tests/test_processed1.mp3')
+    # processor.saveFile('backendtests/test_processed1.mp3')
+    processor.saveFile('tests/test_processed1.mp3')
