@@ -1,7 +1,8 @@
 name: Move PR to In Progress
 
 on:
-  pull_request:
+  push:
+    #pull_request:
     #types:
     #  - opened
 
@@ -10,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Move PR to In Progress
-        uses: actions/add-to-project@RELEASE_VERSION
+        uses: actions/add-to-project@v1.0.0
         with:
           project-url: https://github.com/orgs/CM22007-Group29/projects/1
           github-token: ${{ secrets.GITHUB_TOKEN }}
