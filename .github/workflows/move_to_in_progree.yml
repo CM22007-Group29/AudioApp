@@ -2,8 +2,8 @@ name: Move PR to In Progress
 
 on:
   pull_request:
-    types:
-      - opened
+    #types:
+    #  - opened
 
 jobs:
   update_project:
