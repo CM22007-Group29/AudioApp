@@ -1,5 +1,3 @@
 pydub 
-sys
-os
 flask
 pymongo
