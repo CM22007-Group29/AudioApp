@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from AudioFile import Audio
 from AudioProcessor import AudioProcessingService
 
-def test():
+def test_audioprocessor():
     path = 'backend/tests/test1.mp3'
     # Create an Audio instance
     audioFile = Audio(path)
@@ -22,5 +22,3 @@ def test():
 
     # Save the processed audio using the processor's method
     processor.saveFile('backend/tests/test_processed1.mp3')
-
-test()
