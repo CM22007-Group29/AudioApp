@@ -31,14 +31,14 @@ class SpeachToText():
             for word_info in segment.get('words', []):
                 word_text = word_info.get('text', '').strip()
                 words.append(word_text)
-                word_times.append((word_info.get('start'), word_info.get('end')))
+                word_times.append((word_info.get('start') * 1000, word_info.get('end')* 1000))
 
         # print("Sentences:", sentences)
         # print("Sentence Times:", sentence_times)
         # print("Words:", words)
         # print("Word Times:", word_times)
-        return(sentences, sentence_times, words, word_times)
+        return(words, word_times)
 
 model = SpeachToText()
-output = model.transcribe("Recording.m4a")
-print(output[2:])
+output = model.transcribe("backend\\tests\\test1.mp3")
+print(output)

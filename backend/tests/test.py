@@ -17,7 +17,8 @@ def test():
     processor = AudioProcessingService(audioFile)
     
     # Process the audio (cutting it as specified)
-    processor.processAudio([(2020, 3020)])
+    cutStamps = processor.getTimestampes()
+    processor.processAudio(cutStamps)
     print("Processed file duration: ", processor.audio.duration_seconds)
 
     # Save the processed audio using the processor's method
