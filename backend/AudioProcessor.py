@@ -1,4 +1,4 @@
-from pydub import AudioSegment
+from pydub import AudioSegment, effects
 
 class AudioProcessingService:
     def __init__(self, audioFile):
@@ -28,13 +28,22 @@ class AudioProcessingService:
         new_audio += self.audio[last_index:]
         self.audio = new_audio
         return self.audio
+    
+    def normalizeAudio(self):
+        """
+        Normalise the audio volume using pydub built in function
+        """
+        return effects.normalize(self.audio)
 
-    def processAudio(self, timestamps=[]):
+    def processAudio(self, timestamps=[], normalize=False):
         """
         Process the audio based on the provided timestamps.
         Carry out other processing steps here. (e.g., noise reduction, volume normalization)
+        normalise: bool that determines whether normalization happens
         """
         if timestamps:
+            if normalize:
+                self.audio = self.normalizeAudio()
             return self.cutAudio(timestamps)
         return self.audio
 
