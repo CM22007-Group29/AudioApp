@@ -41,9 +41,9 @@ class AudioProcessingService:
         Carry out other processing steps here. (e.g., noise reduction, volume normalization)
         normalise: bool that determines whether normalization happens
         """
+        if normalize:
+            self.audio = self.normalizeAudio()
         if timestamps:
-            if normalize:
-                self.audio = self.normalizeAudio()
             return self.cutAudio(timestamps)
         return self.audio
 
