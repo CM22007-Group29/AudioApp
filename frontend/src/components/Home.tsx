@@ -1,9 +1,11 @@
 function Home() {
   return (
     <>
-      <div className="h-screen bg-[#262626] flex items-center jusity-center">
+      <div className="h-screen bg-[#262626]">
         
-        <h1 className="text-white">HOME</h1>
+        <p className="text-3xl text-white font-bold text-center">
+          Edit your audio with a click of a button.
+        </p>
       </div>
     </>
   )
