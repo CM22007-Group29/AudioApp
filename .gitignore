@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python / Backend testing
+.DS_Store
+__pycache__/
+htmlcov/
+reports/
