@@ -1,5 +1,7 @@
 import { useAudioContext } from "./AudioProvider";
 import { Button, Stack } from "@mui/material";
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
 
 export const Transport = () => {
   const audio = useAudioContext()
@@ -15,10 +17,10 @@ export const Transport = () => {
   return (
     <Stack spacing={2} direction="row">
       <Button onClick={play} variant="contained">
-        Play
+        <PlayArrowIcon />
       </Button>
       <Button onClick={pause} variant="contained">
-        Pause
+        <PauseIcon />
       </Button>
     </Stack>
   )
