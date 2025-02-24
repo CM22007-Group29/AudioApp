@@ -17,3 +17,7 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=pass
     ports:
       - 27017:27017
+  whisper:
+    image: whisper_timestamped_cpu:latest
+    ports:
+      - "5000:5000"

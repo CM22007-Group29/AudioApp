@@ -3,11 +3,11 @@ import whisper_timestamped
 import json
 class SpeachToText():
     def __init__(self):
-        self.model = model = whisper_timestamped.load_model("small", device="cpu")
+        self.model = model = whisper_timestamped.load_model("turbo", device=None)
 
     def transcribe(self, audioPath):
         audio = whisper_timestamped.load_audio(audioPath)
-        output = self.parse(whisper_timestamped.transcribe(self.model, audio, language="en"))
+        output = self.parse(whisper_timestamped.transcribe(self.model, audio, language="en", detect_disfluencies=True, vad=True,))
         return output
     
     def parse(self, result):
