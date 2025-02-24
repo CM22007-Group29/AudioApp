@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
 import { useAudioContext } from "./AudioProvider";
-import { Button } from "@mui/material";
+import { Button, Chip } from "@mui/material";
 
 export const Transport = () => {
     const audio = useAudioContext()
@@ -20,6 +21,7 @@ export const Transport = () => {
             <Button onClick={pause}>
                 pause
             </Button>
+            <Chip label={audio?.currentTime.toFixed(2) + "s"} />
         </div>
     )
 }
