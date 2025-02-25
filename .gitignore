@@ -28,3 +28,6 @@ dist-ssr
 __pycache__/
 htmlcov/
 reports/
+
+# API keys and secrets
+.env
