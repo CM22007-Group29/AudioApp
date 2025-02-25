@@ -1,4 +1,4 @@
-from pydub import AudioSegment, effects
+from pydub import AudioSegment, effects, silence
 
 from AudioFile import Audio
 
@@ -33,65 +33,39 @@ class AudioProcessingService:
     
     def normalizeAudio(self):
         """
-        Normalise the audio volume using pydub built in function
+        Normalise the audio volume
         """
         return effects.normalize(self.audio)
     
-    def removeSilences(self, threshold=0.0):
+    def removeSilences(self, min_sil_len_sec):
         """
-        Remove background noise in the audio, determined by a threshold given by the user
-        threshold: the threshold set by the user as a float between 0 and 1 where lower means more background noise removed
+        Remove overlong silences in the audio
+        min_sil_len_sec: int for the minimum length a silence must be to be removed (in seconds)
         """
-        audio_length_s = self.audio.duration_seconds
-        audio_length_ms = audio_length_s * 1000
+        min_sil_len_ms = min_sil_len_sec * 1000
 
-        # Pydub uses a relative scaling for its volume
-        # So get the maxium possible volume of the audio
-        max_vol = self.audio.max_dBFS
+        # silence_thresh - (in dBFS) anything quieter than this will be considered silence
+        # this number is very dependent on the audio sample being used
+        silence_threshold = -43
 
-        # Dbfs gives decibels relative to full scale
-        # 0 is the loudest possible volume in the sample
-        # It then decreases logarithmically from there (-10 Dbfs is 1/10 of full volume)
-
-        # Maximum level for background noise removal will be half of max possible volume
-        max_threshold = max_vol / 2
-
-        # Then scale this by users threshold setting using log base 10
-
-
-        # Run through the audio clip and get a list of timestamps for silences
-        # In format [(start,end), ...]
-        timestamps = []
-
-        start = 0
-        end = 0
-        background = False
-        while end < audio_length_ms:
-            
-            # print(self.audio[end].dBFS)
-            if self.audio[end].dBFS <= threshold:
-                if not background:
-                    background = True
-                    start = end
-            else:
-                if background:
-                    # Add this section to timestamp list
-                    timestamps.append((start, end))
-                    background = False
-            end += 1
+        timestamps = silence.detect_silence(self.audio, min_sil_len_ms, silence_threshold, 1)
         
-        print(timestamps)
-        return timestamps
+        # Now use cut audio function to remove these timestamps
+        return self.cutAudio(timestamps)
 
-    def processAudio(self, timestamps=[], normalize=False):
+    def processAudio(self, timestamps=[], normalize=False, silence_length = -1):
         """
         Process the audio based on the provided timestamps.
         Carry out other processing steps here. (e.g., noise reduction, volume normalization)
-        normalise: bool that determines whether normalization happens
+        normalize: bool that determines whether normalization happens
+        silence_threshold: int for the minimum length of silence that must be removed (in seconds)
         """
         
         if timestamps:
-            return self.cutAudio(timestamps)
+            self.audio = self.cutAudio(timestamps)
+        
+        if silence_length > 0:
+            self.audio = self.removeSilences(silence_length)
         
         # Normalisation makes sense as last step
         if normalize:
@@ -116,8 +90,8 @@ if __name__ == "__main__":
     processor = AudioProcessingService(audioFile)
     
     # Process the audio (cutting it as specified)
-    processor.removeSilences()
+    processor.processAudio([], normalize=False, silence_length=1)
 
     # Save the processed audio using the processor's method
     # processor.saveFile('backendtests/test_processed1.mp3')
-    processor.saveFile('backend/tests/test_background_noise.mp3')
+    processor.saveFile('backend/tests/test_silence_removal.mp3')
