@@ -78,20 +78,3 @@ class AudioProcessingService:
         Exports the processed audio to a file.
         """
         self.audio.export(outputFilePath, format=self.fileType)
-
-
-if __name__ == "__main__":
-    # path = 'backend/tests/audio_input.mp3'
-    path = 'backend/tests/audio_input.mp3'
-
-    audioFile = Audio(path)
-    
-    # Create the processing service instance
-    processor = AudioProcessingService(audioFile)
-    
-    # Process the audio (cutting it as specified)
-    processor.processAudio([], normalize=False, silence_length=1)
-
-    # Save the processed audio using the processor's method
-    # processor.saveFile('backendtests/test_processed1.mp3')
-    processor.saveFile('backend/tests/test_silence_removal.mp3')
