@@ -8,7 +8,7 @@ from AudioFile import Audio
 from AudioProcessor import AudioProcessingService
 
 def test():
-    path = 'backend/tests/test1.mp3'
+    path = 'backend/tests/test2.mp3'
     # Create an Audio instance
     audioFile = Audio(path)
     print("Input file duration: ", audioFile.getDuration())

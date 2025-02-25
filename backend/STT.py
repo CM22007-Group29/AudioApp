@@ -3,11 +3,11 @@ import whisper_timestamped
 import json
 class SpeachToText():
     def __init__(self):
-        self.model = model = whisper_timestamped.load_model("turbo", device=None)
+        self.model = model = whisper_timestamped.load_model("turbo", device="cpu")
 
     def transcribe(self, audioPath):
         audio = whisper_timestamped.load_audio(audioPath)
-        output = self.parse(whisper_timestamped.transcribe(self.model, audio, language="en", detect_disfluencies=True, vad=True,))
+        output = self.parse(whisper_timestamped.transcribe(self.model, audio, language="en", detect_disfluencies=True))
         return output
     
     def parse(self, result):
@@ -31,14 +31,11 @@ class SpeachToText():
             for word_info in segment.get('words', []):
                 word_text = word_info.get('text', '').strip()
                 words.append(word_text)
-                word_times.append((word_info.get('start') * 1000, word_info.get('end')* 1000))
+                buffer = 50
+                word_times.append((word_info.get('start') * 1000 - buffer, word_info.get('end')* 1000 + buffer))
 
         # print("Sentences:", sentences)
         # print("Sentence Times:", sentence_times)
         # print("Words:", words)
         # print("Word Times:", word_times)
         return(words, word_times)
-
-model = SpeachToText()
-output = model.transcribe("backend\\tests\\test1.mp3")
-print(output)

@@ -2,7 +2,7 @@ import re
 class WordRemover():
     def __init__(self, words = []):
         self.words = set(words)
-        self.swears = set(["fuck","shit","bitch"])
+        self.swears = set(["fuck","shit","bitch","fucking","shitting"])
 
     def remove(self, words, timestamps):
         times_to_remove = []
