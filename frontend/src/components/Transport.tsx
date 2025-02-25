@@ -1,5 +1,5 @@
 import { useAudioContext } from "./AudioProvider";
-import { Button, Stack } from "@mui/material";
+import { Button, Chip, Stack } from "@mui/material";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 
@@ -22,6 +22,7 @@ export const Transport = () => {
       <Button onClick={pause} variant="contained">
         <PauseIcon />
       </Button>
+      <Chip label={audio?.currentTime.toFixed(2) + "s"} />
     </Stack>
   )
 }

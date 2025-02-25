@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useAudioContext } from "./AudioProvider";
-import { Chip, Slider, Stack } from "@mui/material";
+import { Slider, Stack } from "@mui/material";
 
 export const ProgressBar = () => {
   const audio = useAudioContext()
@@ -26,7 +26,6 @@ export const ProgressBar = () => {
         value={progress}
         onChange={changeTime}
       />
-      <Chip label={audio?.currentTime.toFixed(2) + "s"} />
     </Stack>
   )
 }

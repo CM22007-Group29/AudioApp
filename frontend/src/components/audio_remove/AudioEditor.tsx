@@ -8,9 +8,9 @@ function AudioEditor() {
     return (
       <Container sx={{ marginTop: 1 }}>
         <AudioContextProvider>
+          <Waveform />
           <ProgressBar />
           <Transport />
-          <Waveform />
         </AudioContextProvider>
       </Container>
     )
