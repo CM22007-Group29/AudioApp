@@ -37,35 +37,32 @@ class AudioProcessingService:
         """
         return effects.normalize(self.audio)
     
-    def removeSilences(self, min_sil_len_sec):
+    def removeSilences(self, min_sil_len_sec, silence_threshold):
         """
         Remove overlong silences in the audio
         min_sil_len_sec: int for the minimum length a silence must be to be removed (in seconds)
         """
         min_sil_len_ms = min_sil_len_sec * 1000
 
-        # silence_thresh - (in dBFS) anything quieter than this will be considered silence
-        # this number is very dependent on the audio sample being used
-        silence_threshold = -43
-
         timestamps = silence.detect_silence(self.audio, min_sil_len_ms, silence_threshold, 1)
         
         # Now use cut audio function to remove these timestamps
         return self.cutAudio(timestamps)
 
-    def processAudio(self, timestamps=[], normalize=False, silence_length = -1):
+    def processAudio(self, timestamps=[], normalize=False, silence_length = -1, silence_threshold=-40):
         """
         Process the audio based on the provided timestamps.
         Carry out other processing steps here. (e.g., noise reduction, volume normalization)
         normalize: bool that determines whether normalization happens
-        silence_threshold: int for the minimum length of silence that must be removed (in seconds)
+        silence_length: int for minimum length of silence to be removed (in seconds)
+        silence_threshold: int for the maximum level of decibels audio can be to be considered silence
         """
         
         if timestamps:
             self.audio = self.cutAudio(timestamps)
         
         if silence_length > 0:
-            self.audio = self.removeSilences(silence_length)
+            self.audio = self.removeSilences(silence_length, silence_threshold)
         
         # Normalisation makes sense as last step
         if normalize:
