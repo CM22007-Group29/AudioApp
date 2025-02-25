@@ -6,9 +6,14 @@ type AudioState = {
     endTime: number | null;
     currentTime: number;
     setTime: (time: number) => void;
+    amp_data: number[];
 }
 
 const AudioContext = createContext<AudioState | null>(null);
+
+const getAmplitudeData = () => {
+  return Array.from({length: 100}, () => Math.floor(Math.random() * 100));
+}
 
 export const AudioContextProvider = ({ children }: { children: React.ReactNode }) => {
   const audio = useRef<HTMLAudioElement>(null);
@@ -21,14 +26,15 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
       if (audio.current) {
         audio.current.currentTime = time;
       }
-    }
+    },
+    amp_data: getAmplitudeData(),
   });
 
   useEffect(() => {
     if (context.audioRef.current && !context.endTime) {
       setContext({
         ...context,
-        endTime: context.audioRef.current.duration
+        endTime: context.audioRef.current.duration,
       });
     }
 

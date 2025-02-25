@@ -2,6 +2,7 @@ import { Container } from "@mui/material"
 import { AudioContextProvider } from "../AudioProvider"
 import { Transport } from "../Transport"
 import { ProgressBar } from "../ProgressBar"
+import { Waveform } from "../Waveform"
 
 function AudioEditor() {
     return (
@@ -9,6 +10,7 @@ function AudioEditor() {
         <AudioContextProvider>
           <ProgressBar />
           <Transport />
+          <Waveform />
         </AudioContextProvider>
       </Container>
     )
