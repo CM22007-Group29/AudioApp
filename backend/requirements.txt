@@ -2,4 +2,6 @@ pydub
 pytest-html
 coverage
 flask
+onnxruntime
+torchaudio
 Flask-SQLAlchemy
