@@ -8,10 +8,8 @@ COPY package.json package-lock.json ./
 
 RUN npm install
 
-RUN npm i -g serve
-
 COPY . .
 
 RUN npm run build
 
-EXPOSE 5173
+EXPOSE 4173
