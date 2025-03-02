@@ -60,7 +60,7 @@ def test_silence_removal():
     original_duration = processor.audio.duration_seconds
     
     # Process the audio (with a silence length of 0.5 and a low threshold)
-    processor.processAudio(silence_length=1, silence_threshold=-16)
+    processor.processAudio(silence_length=1, silence_threshold=-40)
 
     # Get duration after silence removal
     silenced_duration = processor.audio.duration_seconds
@@ -68,5 +68,5 @@ def test_silence_removal():
     # Save the processed audio using the processor's method to check if difference can be heard
     processor.saveFile('tests/test_silence_removal')
 
-    # If successful silenced audio duration less than or equal to length
-    assert original_duration <= silenced_duration
+    # If successful silenced audio duration less than or equal to original
+    assert silenced_duration <= original_duration
