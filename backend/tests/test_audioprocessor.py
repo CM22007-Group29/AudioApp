@@ -65,4 +65,3 @@ def test_STT():
     processor = AudioProcessingService(outputFile)
     cutStamps = processor.getTimestamps()
     assert len(cutStamps) == 0
-
