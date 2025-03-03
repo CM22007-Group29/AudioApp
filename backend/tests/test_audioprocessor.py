@@ -46,7 +46,7 @@ def test_normalization():
     processor.saveFile('tests/test_processed_normalized.mp3')
 
 def test_STT():
-    path = 'backend/tests/test2.mp3'
+    path = 'tests/test2.mp3'
     # Create an Audio instance
     audioFile = Audio(path)
     print("Input file duration: ", audioFile.getDuration())
