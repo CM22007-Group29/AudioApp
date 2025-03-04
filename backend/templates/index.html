@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -7,5 +7,72 @@
 </head>
 <body>
     <h1>Hello World</h1>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Database Tables</title>
+  <style>
+    table, th, td {
+      border: 1px solid #444;
+      border-collapse: collapse;
+      padding: 8px;
+    }
+    table {
+      margin-bottom: 30px;
+      width: 80%;
+    }
+    h1 {
+      font-family: sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1>Users Table</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h1>User Preferences Table</h1>
+  <table>
+    <thead>
+      <tr>
+        <th>User ID</th>
+        <th>Normalise</th>
+        <th>Extra Words</th>
+        <th>Silence Length</th>
+        <th>Silence Threshold</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for pref in preferences %}
+      <tr>
+        <td>{{ pref.user_id }}</td>
+        <td>{{ pref.normalise }}</td>
+        <td>{{ pref.extra_words }}</td>
+        <td>{{ pref.silence_length }}</td>
+        <td>{{ pref.silence_threshold }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
 </body>
 </html>

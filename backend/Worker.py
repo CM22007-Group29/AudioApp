@@ -8,7 +8,6 @@ def get_user_preferences(user_id):
     """
     Fetch the user's audio editing preferences from the database.
     """
-
     prefs = UserPreferences.query.filter_by(user_id=user_id).first()
     if not prefs:
         raise ValueError(f"No preferences found for user with id {user_id}")
@@ -41,7 +40,6 @@ def process_audio_for_user(user_id, audio_file_path):
     cut_timestamps = processor.getTimestamps()
 
     # Extract processing parameters from user preferences.
-    # For example, assume:
     # - prefs.normalise is a Boolean whether to normalize audio.
     # - prefs.silence_length is an int (in seconds) for minimum silence length to remove.
     # - prefs.silence_threshold is an int (in dB) threshold for silence.
@@ -70,7 +68,7 @@ if __name__ == '__main__':
         # Specify the user id (this might come from a task queue or parameter)
         user_id = 1
         # Specify the audio file path to process.
-        audio_file_path = "backend/test1.mp3"  # Adjust as necessary
+        audio_file_path = "tests/test1.mp3"  # Adjust as necessary
 
         try:
             output_file = process_audio_for_user(user_id, audio_file_path)

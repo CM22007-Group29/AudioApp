@@ -18,6 +18,7 @@ class User(db.Model):
 
 class UserPreferences(db.Model):
     __tablename__ = 'user_preferences'
+    
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key=True)
     normalise = db.Column(db.Boolean, nullable=False, default=False)
     extra_words = db.Column(db.String(120), nullable=True)
