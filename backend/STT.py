@@ -1,4 +1,3 @@
-
 import whisper_timestamped
 import json
 class SpeachToText():

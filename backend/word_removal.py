@@ -4,6 +4,10 @@ class WordRemover():
         self.words = set(words)
         self.swears = set(["fuck","shit","bitch","fucking","shitting"])
 
+    def update_words(self, additional):
+        for w in additional:
+            self.swears.add(w)
+
     def remove(self, words, timestamps):
         times_to_remove = []
         for i, word in enumerate(words):
