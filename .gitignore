@@ -31,3 +31,6 @@ reports/
 
 # API keys and secrets
 .env
+
+# Database instance
+.db
