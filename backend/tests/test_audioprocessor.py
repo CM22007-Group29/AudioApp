@@ -24,7 +24,7 @@ def test_audioprocessor():
     # Save the processed audio using the processor's method
     # processor.saveFile('backendtests/test_processed1.mp3')
     processor.saveFile('tests/test_processed1.mp3')
-    assert processor.audio.duration_seconds < audioFile.duration_seconds
+    assert processor.audio.duration_seconds < audioFile.getDuration()
 
 def test_normalization():
     # path = 'backend/tests/audio_input.mp3'
@@ -60,8 +60,8 @@ def test_STT():
     print("Processed file duration: ", processor.audio.duration_seconds)
 
     # Save the processed audio using the processor's method
-    processor.saveFile('backend/tests/test_processed1.mp3')
-    outputFile = Audio('backend/tests/test_processed1.mp3')
+    processor.saveFile('tests/test_processed1.mp3')
+    outputFile = Audio('tests/test_processed1.mp3')
     processor = AudioProcessingService(outputFile)
     cutStamps = processor.getTimestamps()
     assert len(cutStamps) == 0
