@@ -1,3 +1,5 @@
+from word_removal import WordRemover
+from STT import SpeachToText
 from pydub import AudioSegment, effects, silence
 
 from AudioFile import Audio
@@ -7,6 +9,9 @@ class AudioProcessingService:
         # Load the audio and store its type for later export.
         self.audio = audioFile.loadFile()
         self.fileType = audioFile.getFileType()
+        self.audio_file = audioFile
+        self.whisper = SpeachToText()
+        self.word_remover = WordRemover()
 
     def cutAudio(self, timestamps):
         """
@@ -31,6 +36,11 @@ class AudioProcessingService:
         self.audio = new_audio
         return self.audio
     
+    def getTimestamps(self):
+        words, timestamps = self.whisper.transcribe(self.audio_file.getFilePath())
+        cutStamps = self.word_remover.remove(words, timestamps)
+        return cutStamps
+
     def normalizeAudio(self):
         """
         Normalise the audio volume

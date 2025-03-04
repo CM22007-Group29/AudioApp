@@ -24,10 +24,38 @@ def test_audioprocessor():
     # Save the processed audio using the processor's method
     # processor.saveFile('backendtests/test_processed1.mp3')
     processor.saveFile('tests/test_processed1.mp3')
+    assert processor.audio.duration_seconds < audioFile.getDuration()
 
 def test_normalization():
+    """
+    Test for normalization by looking at peak amplitude before and after.
+    """
     # path = 'backend/tests/audio_input.mp3'
     path = 'tests/audio_input.mp3'
+    # Create an Audio instance
+    audioFile = Audio(path)
+
+    # Create the processing service instance
+    processor = AudioProcessingService(audioFile)
+
+    # Get peak before normalizing
+    original_peak = processor.audio.max_dBFS
+    
+    # Process the audio (with normalization enabled)
+    # And run with normalization this time
+    processor.processAudio(normalize=True)
+
+    # Get peak after normalizing
+    normalized_peak = processor.audio.max_dBFS
+
+    # Save the processed audio using the processor's method to check if difference can be heard
+    processor.saveFile('tests/test_processed_normalized.mp3')
+
+    # If successful normalized peak should be greater than original
+    assert normalized_peak > original_peak
+
+def test_STT():
+    path = 'tests/test2.mp3'
     # Create an Audio instance
     audioFile = Audio(path)
     print("Input file duration: ", audioFile.getDuration())
@@ -36,13 +64,17 @@ def test_normalization():
     processor = AudioProcessingService(audioFile)
     
     # Process the audio (cutting it as specified)
-    # And run with normalization this time
-    processor.processAudio([(2020, 3020)], True)
+    cutStamps = processor.getTimestamps()
+    processor.processAudio(cutStamps)
     print("Processed file duration: ", processor.audio.duration_seconds)
 
     # Save the processed audio using the processor's method
-    # processor.saveFile('backendtests/test_processed1.mp3')
-    processor.saveFile('tests/test_processed_normalized.mp3')
+    processor.saveFile('tests/test_processed1.mp3')
+    outputFile = Audio('tests/test_processed1.mp3')
+    processor = AudioProcessingService(outputFile)
+    cutStamps = processor.getTimestamps()
+    assert len(cutStamps) == 0
+
 
 def test_silence_removal():
     """
