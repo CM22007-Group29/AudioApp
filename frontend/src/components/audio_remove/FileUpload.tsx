@@ -1,11 +1,10 @@
-import { useCallback, useState } from "react"
 import { useDropzone } from "react-dropzone"
-import { Stack, Button, Box } from "@mui/material"
+import { Stack, Box } from "@mui/material"
 import InputFileUpload from "./file_upload/FileUploadButton"
 import LinkUpload from "./link_upload/LinkButton"
 
 function FileUpload({ setFileUploaded }: { setFileUploaded: (uploaded: boolean) => void }) {
-    const { isDragActive, getRootProps, getInputProps, isDragReject, acceptedFiles} = useDropzone({
+    const { isDragActive, getRootProps, getInputProps, isDragReject} = useDropzone({
         accept: {"audio/*": []},
         multiple: false,
         noClick: true,
@@ -15,12 +14,6 @@ function FileUpload({ setFileUploaded }: { setFileUploaded: (uploaded: boolean) 
             }
         }
     });
-  
-    const files = acceptedFiles.map(file => (
-        <li key={file.path}>
-        {file.path} - {file.size} bytes
-        </li>
-    ));
 
     return (
         <Stack spacing={4} className="flex flex-col items-center justify-center">
