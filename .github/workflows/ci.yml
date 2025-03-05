@@ -5,11 +5,12 @@ on:
     types: [ labeled ]
 
 jobs:
-  test-labels:
+  test-frontend:
     if: ${{ (github.event.label.name == 'frontend') || (github.event.label.name == 'devops') }}
     steps:
       run: echo "frontend or devops"
 
+  test-backend:
     if: ${{ (github.event.label.name == 'backend') || (github.event.label.name == 'devops') }}
     steps:
       run: echo "backend or devops"
