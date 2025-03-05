@@ -1,11 +1,14 @@
 name: CI Pipeline
 
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, labeled, unlabeled]
 
 jobs:
   build-frontend:
-    #if: ${{ (github.event.label.name == 'frontend') || (github.event.label.name == 'devops') }}
+    if: |
+      contains(github.event.pull_request.labels.*.name, 'frontend') || 
+      contains(github.event.pull_request.labels.*.name, 'devops') || 
     runs-on: ubuntu-latest
     permissions: write-all
 
@@ -26,7 +29,9 @@ jobs:
         run: docker compose -f docker-compose.test.yml down
 
   test-backend:
-    #if: ${{ (github.event.label.name == 'backend') || (github.event.label.name == 'devops') }}
+    if: |
+      contains(github.event.pull_request.labels.*.name, 'backend') || 
+      contains(github.event.pull_request.labels.*.name, 'devops') || 
     runs-on: ubuntu-latest
     permissions: write-all
 
