@@ -4,20 +4,29 @@ on:
   push:
 
 jobs:
-  test-frontend:
+  build-frontend:
     if: ${{ (github.event.label.name == 'frontend') || (github.event.label.name == 'devops') }}
+    runs-on: ubuntu-latest
+    permissions: write-all
+
     steps:
-      - name: "frontend"
-        run: echo "frontend or devops"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and run containers
+        run: |
+          docker compose -f docker-compose.yml up -d --build frontend
+          sleep 10  # Wait for services to start
+
+      - name: Stop containers
+        if: always()
+        run: docker compose -f docker-compose.test.yml down
 
   test-backend:
     if: ${{ (github.event.label.name == 'backend') || (github.event.label.name == 'devops') }}
-    steps:
-      - name: "backend"
-        run: echo "backend or devops"
-
-  test:
-    if: ${{ (github.event.label.name == 'oops') }}
     runs-on: ubuntu-latest
     permissions: write-all
 
@@ -31,14 +40,9 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and run containers
-        run: |
-          docker compose -f docker-compose.yml up -d --build
-          sleep 10  # Wait for services to start
-
       - name: Run backend tests
         run: |
-          docker compose -f docker-compose.test.yml up --build
+          docker compose -f docker-compose.test.yml up --build backend
            
           TESTS_PASSED=$(grep -oP '<span class="passed">\K[0-9]+' backend/reports/test_report.html)
           echo "passed=$TESTS_PASSED" >> "$GITHUB_ENV"
@@ -60,21 +64,6 @@ jobs:
             echo "An error occurred! Failing workflow."
             exit 1
           fi
-           
-#      - name: Get PR Number
-#        uses: jwalton/gh-find-current-pr@master
-#        id: findPr
-#        with:
-#          state: open
-#
-#      - name: Comment summary
-#        uses: peter-evans/create-or-update-comment@v4
-#        with:
-#          issue-number: ${{ steps.findPr.outputs.pr }}
-#          body: |
-#            Passed: ${{ env.passed }}
-#            Failed: ${{ env.failed }}
-#            Coverage: ${{ env.coverage }}%
 
       - name: Upload Coverage Report as Artifact
         if: always()
@@ -101,3 +90,4 @@ jobs:
       - name: Stop containers
         if: always()
         run: docker compose -f docker-compose.test.yml down
+
