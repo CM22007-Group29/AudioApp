@@ -5,6 +5,25 @@ on:
     types: [opened, synchronize, labeled, unlabeled]
 
 jobs:
+  check-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR has at least one label
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.info("This event is not a pull request.");
+              return;
+            }
+            const labels = pr.labels.map(label => label.name);
+            if (labels.length === 0) {
+              core.setFailed('Pull request must have at least one label.');
+            } else {
+              core.info(`PR has labels: ${labels.join(', ')}`);
+            }
+
   build-frontend:
     if: |
       contains(github.event.pull_request.labels.*.name, 'frontend') || 
