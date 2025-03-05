@@ -2,7 +2,6 @@ name: CI Pipeline
 
 on:
   push:
-    types: [ labeled ]
 
 jobs:
   test-frontend:
