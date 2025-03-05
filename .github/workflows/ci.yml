@@ -8,7 +8,7 @@ jobs:
   build-frontend:
     if: |
       contains(github.event.pull_request.labels.*.name, 'frontend') || 
-      contains(github.event.pull_request.labels.*.name, 'devops') || 
+      contains(github.event.pull_request.labels.*.name, 'devops') 
     runs-on: ubuntu-latest
     permissions: write-all
 
@@ -31,7 +31,7 @@ jobs:
   test-backend:
     if: |
       contains(github.event.pull_request.labels.*.name, 'backend') || 
-      contains(github.event.pull_request.labels.*.name, 'devops') || 
+      contains(github.event.pull_request.labels.*.name, 'devops') 
     runs-on: ubuntu-latest
     permissions: write-all
 
