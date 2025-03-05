@@ -2,9 +2,20 @@ name: CI Pipeline
 
 on:
   push:
+    types: [ labeled ]
 
 jobs:
+  test-labels:
+    if: ${{ (github.event.label.name == 'frontend') || (github.event.label.name == 'devops') }}
+    steps:
+      run: echo "frontend or devops"
+
+    if: ${{ (github.event.label.name == 'backend') || (github.event.label.name == 'devops') }}
+    steps:
+      run: echo "backend or devops"
+
   test:
+    if: ${{ (github.event.label.name == 'oops') }}
     runs-on: ubuntu-latest
     permissions: write-all
 
@@ -17,12 +28,6 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
-      - name: Set up Docker Compose
-        run: |
-          curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-          chmod +x /usr/local/bin/docker-compose
-          sudo service docker start
 
       - name: Build and run containers
         run: |
