@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-frontend:
-    if: ${{ (github.event.label.name == 'frontend') || (github.event.label.name == 'devops') }}
+    #if: ${{ (github.event.label.name == 'frontend') || (github.event.label.name == 'devops') }}
     runs-on: ubuntu-latest
     permissions: write-all
 
@@ -26,7 +26,7 @@ jobs:
         run: docker compose -f docker-compose.test.yml down
 
   test-backend:
-    if: ${{ (github.event.label.name == 'backend') || (github.event.label.name == 'devops') }}
+    #if: ${{ (github.event.label.name == 'backend') || (github.event.label.name == 'devops') }}
     runs-on: ubuntu-latest
     permissions: write-all
 
