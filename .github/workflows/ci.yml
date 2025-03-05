@@ -8,13 +8,13 @@ jobs:
   test-frontend:
     if: ${{ (github.event.label.name == 'frontend') || (github.event.label.name == 'devops') }}
     steps:
-      - name: "name"
+      - name: "frontend"
         run: echo "frontend or devops"
 
   test-backend:
     if: ${{ (github.event.label.name == 'backend') || (github.event.label.name == 'devops') }}
     steps:
-      - name: "name"
+      - name: "backend"
         run: echo "backend or devops"
 
   test:
