@@ -1,37 +1,69 @@
 name: CI Pipeline
 
 on:
-  push:
+  pull_request:
+    types: [opened, synchronize, labeled, unlabeled]
 
 jobs:
-  test:
+  check-labels:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR has at least one label
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            if (!pr) {
+              core.info("This event is not a pull request.");
+              return;
+            }
+            const labels = pr.labels.map(label => label.name);
+            if (labels.length === 0) {
+              core.setFailed('Pull request must have at least one label.');
+            } else {
+              core.info(`PR has labels: ${labels.join(', ')}`);
+            }
+
+  build-frontend:
+    if: |
+      contains(github.event.pull_request.labels.*.name, 'frontend') || 
+      contains(github.event.pull_request.labels.*.name, 'devops') 
     runs-on: ubuntu-latest
     permissions: write-all
 
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Set up Docker Compose
-        run: |
-          curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose
-          chmod +x /usr/local/bin/docker-compose
-          sudo service docker start
-
       - name: Build and run containers
         run: |
-          docker compose -f docker-compose.yml up -d --build
+          docker compose -f docker-compose.yml up -d --build frontend
           sleep 10  # Wait for services to start
+
+      - name: Stop containers
+        if: always()
+        run: docker compose -f docker-compose.test.yml down
+
+  test-backend:
+    if: |
+      contains(github.event.pull_request.labels.*.name, 'backend') || 
+      contains(github.event.pull_request.labels.*.name, 'devops') 
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Run backend tests
         run: |
-          docker compose -f docker-compose.test.yml up --build
+          docker compose -f docker-compose.test.yml up --build backend
            
           TESTS_PASSED=$(grep -oP '<span class="passed">\K[0-9]+' backend/reports/test_report.html)
           echo "passed=$TESTS_PASSED" >> "$GITHUB_ENV"
@@ -53,21 +85,6 @@ jobs:
             echo "An error occurred! Failing workflow."
             exit 1
           fi
-           
-#      - name: Get PR Number
-#        uses: jwalton/gh-find-current-pr@master
-#        id: findPr
-#        with:
-#          state: open
-#
-#      - name: Comment summary
-#        uses: peter-evans/create-or-update-comment@v4
-#        with:
-#          issue-number: ${{ steps.findPr.outputs.pr }}
-#          body: |
-#            Passed: ${{ env.passed }}
-#            Failed: ${{ env.failed }}
-#            Coverage: ${{ env.coverage }}%
 
       - name: Upload Coverage Report as Artifact
         if: always()
@@ -86,7 +103,7 @@ jobs:
       - name: Job Summary
         if: always()
         run: |
-          echo '### Testing Summary 🚀' >> $GITHUB_STEP_SUMMARY
+          echo '### Backend Testing Summary 🚀' >> $GITHUB_STEP_SUMMARY
           echo '✅ Passed:   ${{ env.passed }}' >> $GITHUB_STEP_SUMMARY
           echo '❌ Failed:   ${{ env.failed }}' >> $GITHUB_STEP_SUMMARY
           echo '🤓 Coverage: ${{ env.coverage }}%' >> $GITHUB_STEP_SUMMARY
@@ -94,3 +111,4 @@ jobs:
       - name: Stop containers
         if: always()
         run: docker compose -f docker-compose.test.yml down
+
