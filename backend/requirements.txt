@@ -1,4 +1,8 @@
+pydub 
 pytest-html
 coverage
 flask
-pymongo
+onnxruntime
+torchaudio
+Flask-SQLAlchemy
+whisper_timestamped
