@@ -52,7 +52,7 @@ class AudioProcessingService:
         Remove overlong silences in the audio
         min_sil_len_sec: int for the minimum length a silence must be to be removed (in seconds)
         """
-        min_sil_len_ms = min_sil_len_sec * 1000
+        min_sil_len_ms = int(min_sil_len_sec * 1000)
 
         timestamps = silence.detect_silence(self.audio, min_sil_len_ms, silence_threshold, 1)
         
