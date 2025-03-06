@@ -6,7 +6,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from app.models import db, User, UserPreferences
 from app import create_app
-from worker import process_audio_for_user
+from worker import WorkerProcess
 
 app = create_app()
 
@@ -18,6 +18,7 @@ def give_app_context(func):
 
 @give_app_context
 def test_db_and_worker():
+    audio_file_path = 'backend/tests/audio_input.mp3'
     # Check database is empty and delete all if not
     users = User.get_all()
     for user in users:
@@ -38,11 +39,16 @@ def test_db_and_worker():
     print("preferences creates ", user_preferences.id)
 
     # Process audio for the user
-    process_audio_for_user(user_id=user.id, audio_file_path='backend/tests/audio_input.mp3')
-    print("worker process complete")
+    # create worker
+    worker = WorkerProcess(userid=user.id, audiopath=audio_file_path)
+    outputpath, timestamps = worker.process_audio_for_user() 
+    print(f"Worker process complete \nOutput file at: {outputpath} \n Cut timestamps: {timestamps}")
 
-    user_id = User.delete(1)
+    user_id = User.delete(user.id)
     print(user_id, " deleted")
+
+    pref_id = UserPreferences.delete(user.id)
+    print(pref_id, " deleted")
 
 
 if __name__ == '__main__':
