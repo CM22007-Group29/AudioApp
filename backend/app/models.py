@@ -70,7 +70,7 @@ class AudioFile(BaseModel):
     __tablename__ = 'audio_files'
 
     # TODO: Add more columns for transcript, timestamps, preferences etc - whatever is needed
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=True)
     file_location = db.Column(db.String(80))
     filename = db.Column(db.String(80))
 

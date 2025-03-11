@@ -64,12 +64,12 @@ def user_detail(user_id):
             json_response(None, 404)
 
 
-@api.route("/files/upload/<int:user_id>", methods=["POST"])
-def upload_audio_file(user_id):
+@api.route("/files/upload", methods=["POST"])
+def upload_audio_file():
     """
-        Upload an audio file to the server from a user with /api/files/upload/user_id
+        Upload an audio file to the server from a user with /api/files/upload
 
-        POST /api/files/upload/user_id uploads a new audio file
+        POST /api/files/upload uploads a new audio file
     """
     if request.method == 'POST':
             # check if the post request has the file part
@@ -91,6 +91,7 @@ def upload_audio_file(user_id):
                 filename = secure_filename(file.filename)
                 path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
                 file.save(path)
+                user_id = file.user_id
 
                 audio_file = AudioFile.create({"user_id": user_id, "file_location": path, "filename": filename})
 

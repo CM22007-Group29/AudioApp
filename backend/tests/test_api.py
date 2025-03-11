@@ -36,12 +36,13 @@ def test_audiofile():
 
     # bytesIO simulates binary, this is a fake file
     data = {
-        'file': (BytesIO(sent_file_content), file_name)
+        'file': (BytesIO(sent_file_content), file_name),
+        'user_id': None
     }
 
     # send post request from simulated client containing a new mp3 file
     with app.test_client() as client:
-        response = client.post(f'api/files/upload/{user.id}', data=data, content_type='multipart/form-data')
+        response = client.post(f'api/files/upload', data=data, content_type='multipart/form-data')
 
     response_json = response.get_json()
 
