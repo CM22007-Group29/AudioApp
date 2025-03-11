@@ -9,14 +9,14 @@ class BaseModel(db.Model):
     """
     __abstract__ = True
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 
     @classmethod
     def get_all(cls):
         return cls.query.all()
 
     @classmethod
-    def get_by_id(cls, instance_id):
+    def get(cls, instance_id):
         return cls.query.get(instance_id)
 
     @classmethod
@@ -64,3 +64,15 @@ class User(BaseModel):
 
     def json(self):
         return {'id': self.id,'username': self.username, 'email': self.email}
+
+
+class AudioFile(BaseModel):
+    __tablename__ = 'audio_files'
+
+    # TODO: Add more columns for transcript, timestamps, preferences etc - whatever is needed
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    file_location = db.Column(db.String(80))
+    filename = db.Column(db.String(80))
+
+    def json(self):
+        return {'id': self.id,'user_id': self.user_id, 'file_location': self.file_location, 'filename': self.filename}

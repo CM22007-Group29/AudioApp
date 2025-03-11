@@ -1,11 +1,18 @@
-from flask import Blueprint, jsonify, request
+import os
+from flask import Blueprint, jsonify, request, flash, redirect, send_from_directory
+from flask import current_app as app
+from werkzeug.utils import secure_filename
 
-from app.models import User
+
+from app.models import User, AudioFile
 
 
 # routes created by api.route are all preceded by /api
 # blueprints need to be initialised in __init__.py
 api = Blueprint("api", __name__)
+
+def allowed_file(filename):
+    return filename.rsplit('.', 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
 
 
 def json_response(data, status=200):
@@ -44,7 +51,7 @@ def user_detail(user_id):
     """
 
     if request.method == "GET":
-        return json_response(User.get_by_id(user_id))
+        return json_response(User.get(user_id))
     
     elif request.method == "PUT":
         return json_response(User.update(user_id, request.json))
@@ -55,3 +62,42 @@ def user_detail(user_id):
             return jsonify({"message": f"User {deleted_id} deleted"})  
         else:
             json_response(None, 404)
+
+
+@api.route("/files/upload/<int:user_id>", methods=["POST"])
+def upload_audio_file(user_id):
+    """
+        Upload an audio file to the server from a user with /api/files/upload/user_id
+
+        POST /api/files/upload/user_id uploads a new audio file
+    """
+    if request.method == 'POST':
+            # check if the post request has the file part
+            if 'file' not in request.files:
+                flash('No file received')
+                json_response({'message':'No file recieved'}, 404)
+                return redirect(request.url)
+            
+            file = request.files['file']
+
+            # If the user does not select a file, the browser submits an
+            # empty file without a filename.
+            if file.filename == '':
+                flash('No file was selected')
+                json_response({'message':'No file selected'}, 404)
+                return redirect(request.url)
+            
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(path)
+
+                audio_file = AudioFile.create({"user_id": user_id, "file_location": path, "filename": filename})
+
+                return jsonify({'message':'Audio File created', 'file_id': audio_file.id, 'status_code':201})
+
+
+@api.route("/files/download/<int:user_id>/<int:audio_file_id>")
+def download_audio_file(user_id, audio_file_id):
+    audio_filename = AudioFile.get(id=audio_file_id).filename
+    return send_from_directory(app.config["UPLOAD_FOLDER"], audio_filename)
