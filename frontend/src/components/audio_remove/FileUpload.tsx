@@ -3,17 +3,38 @@ import { Stack, Box } from "@mui/material"
 import InputFileUpload from "./file_upload/FileUploadButton"
 import LinkUpload from "./link_upload/LinkButton"
 
+
 function FileUpload({ setFileUploaded }: { setFileUploaded: (uploaded: boolean) => void }) {
+    // setFileUploaded is a function to update state of whether a file has been uploaded
+
     const { isDragActive, getRootProps, getInputProps, isDragReject} = useDropzone({
-        accept: {"audio/*": []},
-        multiple: false,
+        accept: { "audio/*": [] },
+        multiple: false, // limit to one file
         noClick: true,
-        onDrop: (files) => {
+        onDrop: (files: File[]) => {
+            // Checks if files have been uploaded, sets upload state to true if file present
             if (files.length > 0) {
                 setFileUploaded(true)
+                handleDrop(files)
             }
         }
     });
+
+    // handle the file upload
+    // https://www.dhiwise.com/post/how-to-use-react-dropzone-a-complete-guide-with-examples
+    const handleDrop = (acceptedFiles: File[]) => {
+        const formData = new FormData()
+        formData.append('file', acceptedFiles[0])
+
+        // change 'backend_endpoint to the actual endpoint
+        fetch('backend_endpoint', {
+            method: 'POST',
+            body: formData,
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error(error))
+    }
 
     return (
         <Stack spacing={4} className="flex flex-col items-center justify-center">
