@@ -11,5 +11,3 @@ RUN pip install -r requirements.txt --no-cache-dir
 RUN apt-get update && \
     apt-get install -y --no-install-recommends ffmpeg sqlite3 && \
     rm -rf /var/lib/apt/lists/*
-
-CMD ["python", "-m", "backend"]
