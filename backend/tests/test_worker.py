@@ -18,8 +18,8 @@ def give_app_context(func):
 
 @give_app_context
 def test_db_and_worker():
-    # audio_file_path = 'backend/tests/audio_input.mp3'
-    audio_file_path = 'tests/audio_input.mp3'
+    # audio_file_path = 'backend/tests/audio_input.mp3' #local path
+    audio_file_path = 'tests/audio_input.mp3' #docker path
     # Check database is empty and delete all if not
     users = User.get_all()
     for user in users:
