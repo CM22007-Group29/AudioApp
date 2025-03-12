@@ -2,8 +2,8 @@ from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 
-from app.routes import api
-from app.models import db
+from .routes import api
+from .models import db
 
 def create_app():
     # init app

@@ -1,7 +1,7 @@
 import os
-from app.models import db, User, UserPreferences 
-from AudioFile import Audio
-from AudioProcessor import AudioProcessingService
+from .app.models import UserPreferences 
+from .AudioFile import Audio
+from .AudioProcessor import AudioProcessingService
 
 class WorkerProcess():
     def __init__(self, userid, audiopath):

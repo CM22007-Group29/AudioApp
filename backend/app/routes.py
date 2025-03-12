@@ -1,7 +1,8 @@
 from flask import Blueprint, jsonify, request, current_app, send_from_directory
 from flask import current_app, request, send_from_directory
 from werkzeug.utils import secure_filename
-from app.models import User
+from .models import User
+from backend.worker import WorkerProcess
 import os
 
 # routes created by api.route are all preceded by /api
@@ -14,7 +15,9 @@ def json_response(data, status=200):
         return jsonify({"error": "Not found"}), 404
     if isinstance(data, list):
         return jsonify([obj.to_dict() for obj in data]), status
-    return jsonify(data.to_dict()), status
+    if hasattr(data, "to_dict"):
+        return jsonify(data.to_dict()), status
+    return jsonify(data), status
 
 
 
@@ -56,8 +59,8 @@ def user_detail(user_id):
             return jsonify({"message": f"User {deleted_id} deleted"})  
         else:
             json_response(None, 404)
-       
-        
+
+
 @api.route("/users/<int:user_id>/preferences", methods=["GET", "POST"])
 def user_preferences(user_id):
     """
@@ -130,3 +133,22 @@ def audio(user_id):
         return send_from_directory(directory=dir_path, path=file_name)
 
     return json_response(None, 404)
+
+@api.route("/audio/<int:user_id>/process", methods=["POST"])
+def process_audio(user_id):
+    """
+        Process audio with /api/audio/{user_id}/process
+        POST /api/audio/{user_id}/process processes audio
+    """
+
+    user = User.get_by_id(user_id)
+    if not user:
+        return json_response(None, 404)
+
+    audio_entry = user.get_audio()
+    if not audio_entry or not os.path.exists(audio_entry.file_path):
+        return json_response(None, 404)
+
+    worker = WorkerProcess(user_id, audio_entry.file_path)
+    output_path, timestamps = worker.process_audio_for_user()
+    return json_response({"output_path": output_path, "timestamps": timestamps}, 201)

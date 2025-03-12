@@ -15,6 +15,33 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export default function InputFileUpload({ setFileUploaded }: { setFileUploaded: (uploaded: boolean) => void }) {
+  const userId = 1; // would be fetched from signed in user
+
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files || event.target.files.length === 0) {
+      return;
+    }
+
+    const file = event.target.files[0];
+
+    const formData = new FormData();
+    formData.append("audio", file);
+
+    try {
+      const response = await fetch(`http://127.0.0.1:4040/api/audio/${userId}`, {
+        method: "POST",
+        body: formData
+      });
+      if (response.ok) {
+        setFileUploaded(true);
+      } else {
+        console.error("Upload failed");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
     <Button
       component="label"
@@ -28,11 +55,7 @@ export default function InputFileUpload({ setFileUploaded }: { setFileUploaded: 
       <VisuallyHiddenInput
         type="file"
         accept="audio/*"
-        onChange={(event) => {
-          if (event.target.files && event.target.files.length > 0) {
-            setFileUploaded(true)
-          }
-        }}
+        onChange={handleFileUpload}
       />
     </Button>
   );
