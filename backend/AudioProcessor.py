@@ -36,9 +36,14 @@ class AudioProcessingService:
         self.audio = new_audio
         return self.audio
     
-    def getTimestamps(self):
-        words, timestamps = self.whisper.transcribe(self.audio_file.getFilePath())
-        cutStamps = self.word_remover.remove(words, timestamps)
+    def getTimestamps(self, betterVersion = False):
+        if not betterVersion:
+            words, timestamps = self.whisper.transcribe(self.audio_file.getFilePath())
+            cutStamps = self.word_remover.remove(words, timestamps)
+        else:
+            import STT_copy
+            timestamps, words, score = STT_copy.SpeachToText().transcribe(self.audio_file.getFilePath())
+            cutStamps = self.word_remover.roided_remove(words, timestamps)
         return cutStamps
 
     def normalizeAudio(self):

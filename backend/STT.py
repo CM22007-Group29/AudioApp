@@ -7,7 +7,7 @@ class SpeachToText():
 
     def transcribe(self, audioPath):
         audio = whisper_timestamped.load_audio(audioPath)
-        output = self.parse(whisper_timestamped.transcribe(self.model, audio, language="en", detect_disfluencies=True))
+        output = self.parse(whisper_timestamped.transcribe(self.model, audio, language="en", detect_disfluencies=True, plot_word_alignment=True))
         return output
     
     def parse(self, result):

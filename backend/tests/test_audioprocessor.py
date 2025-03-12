@@ -18,7 +18,7 @@ def test_audioprocessor():
     processor = AudioProcessingService(audioFile)
     
     # Process the audio (cutting it as specified)
-    processor.processAudio([(2020, 3020)])
+    processor.processAudio([(2400, 2700)])
     print("Processed file duration: ", processor.audio.duration_seconds)
 
     # Save the processed audio using the processor's method
@@ -46,7 +46,7 @@ def test_normalization():
     processor.saveFile('tests/test_processed_normalized.mp3')
 
 def test_STT():
-    path = 'tests/test2.mp3'
+    path = 'tests/audio_input.mp3'
     # Create an Audio instance
     audioFile = Audio(path)
     print("Input file duration: ", audioFile.getDuration())
@@ -55,7 +55,8 @@ def test_STT():
     processor = AudioProcessingService(audioFile)
     
     # Process the audio (cutting it as specified)
-    cutStamps = processor.getTimestamps()
+    cutStamps = processor.getTimestamps(betterVersion=True)
+    print(cutStamps)
     processor.processAudio(cutStamps)
     print("Processed file duration: ", processor.audio.duration_seconds)
 
@@ -63,5 +64,7 @@ def test_STT():
     processor.saveFile('tests/test_processed1.mp3')
     outputFile = Audio('tests/test_processed1.mp3')
     processor = AudioProcessingService(outputFile)
-    cutStamps = processor.getTimestamps()
+    cutStamps = processor.getTimestamps(betterVersion=True)
     assert len(cutStamps) == 0
+
+test_STT()
