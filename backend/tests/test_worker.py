@@ -37,7 +37,6 @@ def test_db_and_worker():
     pref_id = UserPreferences.delete(user.id)
     print(pref_id, " deleted")
 
-
-if __name__ == '__main__':
-    test_db_and_worker()
+# if __name__ == '__main__':
+#     test_db_and_worker()
 

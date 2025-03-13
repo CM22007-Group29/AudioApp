@@ -1,12 +1,10 @@
 from backend.AudioFile import Audio
 from backend.AudioProcessor import AudioProcessingService
 
-from tests import give_app_context
 
-@give_app_context
 def test_audioprocessor():
-    # path = 'backend/tests/audio_input.mp3' # local path
-    path = 'tests/audio_input.mp3' # docker path
+    path = 'backend/tests/audio_input.mp3' # local path
+    # path = 'tests/audio_input.mp3' # docker path
     # Create an Audio instance
     audioFile = Audio(path)
     print("Input file duration: ", audioFile.getDuration())
@@ -20,16 +18,16 @@ def test_audioprocessor():
 
     # Save the processed audio using the processor's method
     # processor.saveFile('backendtests/test_processed1.mp3')
-    processor.saveFile('tests/test_processed1.mp3')
+    processor.saveFile('backend/tests/test_processed.mp3')
     assert processor.audio.duration_seconds < audioFile.getDuration()
 
-@give_app_context
+
 def test_normalization():
     """
     Test for normalization by looking at peak amplitude before and after.
     """
-    # path = 'backend/tests/audio_input.mp3' #local path
-    path = 'tests/audio_input.mp3' #docker path
+    path = 'backend/tests/audio_input.mp3' #local path
+    # path = 'tests/audio_input.mp3' #docker path
     # Create an Audio instance
     audioFile = Audio(path)
 
@@ -47,14 +45,15 @@ def test_normalization():
     normalized_peak = processor.audio.max_dBFS
 
     # Save the processed audio using the processor's method to check if difference can be heard
-    processor.saveFile('tests/test_processed_normalized.mp3')
+    processor.saveFile('backend/tests/test_processed_normalized.mp3')
 
     # If successful normalized peak should be greater than original
     assert normalized_peak > original_peak
 
-@give_app_context
+
 def test_STT():
-    path = 'tests/test2.mp3'
+    # path = 'tests/test2.mp3'
+    path = 'backend/tests/test2.mp3' 
     # Create an Audio instance
     audioFile = Audio(path)
     print("Input file duration: ", audioFile.getDuration())
@@ -68,19 +67,19 @@ def test_STT():
     print("Processed file duration: ", processor.audio.duration_seconds)
 
     # Save the processed audio using the processor's method
-    processor.saveFile('tests/test_processed1.mp3')
-    outputFile = Audio('tests/test_processed1.mp3')
+    processor.saveFile('backend/tests/test_processed1.mp3')
+    outputFile = Audio('backend/tests/test_processed1.mp3')
     processor = AudioProcessingService(outputFile)
     cutStamps = processor.getTimestamps()
     assert len(cutStamps) == 0
 
-@give_app_context
+
 def test_silence_removal():
     """
     Test for silence removal by looking at duration of clip.
     """
-    # path = 'backend/tests/audio_input.mp3' #local path
-    path = 'tests/audio_input.mp3' #docker path
+    path = 'backend/tests/audio_input.mp3' #local path
+    # path = 'tests/audio_input.mp3' #docker path
     # Create an Audio instance
     audioFile = Audio(path)
 
@@ -97,7 +96,7 @@ def test_silence_removal():
     silenced_duration = processor.audio.duration_seconds
 
     # Save the processed audio using the processor's method to check if difference can be heard
-    processor.saveFile('tests/test_silence_removal')
+    processor.saveFile('backend/tests/test_silence_removal.mp3')
 
     # If successful silenced audio duration less than or equal to original
     assert silenced_duration <= original_duration

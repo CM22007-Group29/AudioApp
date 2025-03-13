@@ -33,4 +33,5 @@ reports/
 .env
 
 # Database instance
-.db
+instance
+ *.db
