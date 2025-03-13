@@ -1,12 +1,12 @@
-import sys
-import os
+# import sys
+# import os
 
 # Add the parent directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from app.models import db, User, UserPreferences
-from app import create_app
-from worker import WorkerProcess
+from backend.app.models import db, User, UserPreferences
+from backend.app import create_app
+from backend.worker import WorkerProcess
 
 app = create_app()
 
