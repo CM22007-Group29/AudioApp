@@ -16,7 +16,7 @@ You can create an alias for this command so you don't have to type the whole thi
 
 `alias dock='sudo docker-compose up'`
 
-Docker will automatically install required packages and the website is hosted locally on your machine (due to the line `app.run(host='0.0.0.0',debug=True)` in main.py, this can be changed later).
+Docker will automatically install required packages and the website is hosted locally on your machine (due to the line `app.run(host='0.0.0.0',debug=True)` in run.py, this can be changed later).
 
 The website can be opened by clicking on this line in your terminal: 
 `web_1  |  * Running on http://172.19.0.3:5000/ (Press CTRL+C to quit)`

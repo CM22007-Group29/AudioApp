@@ -9,12 +9,14 @@ services:
       - ./backend/sqlite-data:/main/backend/sqlite-data
 
   frontend:
-    build: frontend
-    command: npm run preview
+    build: 
+      context: frontend
+      dockerfile: Dockerfile.dev
+    command: npm run dev
     ports:
-      - "4173:4173"
+      - "5173:5173"
     volumes:
-      - ./frontend:/app/src
+      - ./frontend:/app
       - /app/node_modules
 
 volumes:
