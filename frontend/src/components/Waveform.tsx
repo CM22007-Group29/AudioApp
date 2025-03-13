@@ -64,6 +64,19 @@ export const Waveform = () => {
       return () => cancelAnimationFrame(animationFrameId);
   }, [audio]);
 
+  const handleClick = (event) => {
+      const rect = canvas.current.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const progress = (event.clientX - rect.left) / rect.width;
+      console.log(audio?.audioRef.current?.duration)
+      audio.setTime(progress * audio?.audioRef.current?.duration);
+  }
+
+  useEffect(() => {
+    cursor.current?.addEventListener("click", handleClick);
+    // return () => cursor.current.removeEventListener("click", handleClick);
+  }, []);
+
   return(
     <Box sx={{ width: "100%" }}>
       <canvas ref={cursor} style={{ position: "absolute" }}></canvas>
