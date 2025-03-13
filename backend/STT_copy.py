@@ -38,19 +38,11 @@ class SpeachToText():
                     if score is not None:
                         scores.append(score)
 
-        print("Time tuples:", time_tuples)
-        print("Words:", words)
-        print("Scores:", scores)
+        print(time_tuples)
+        print(words)
         return time_tuples, words, scores
     
-import word_removal
 
-stt = SpeachToText()
-time, words, scores = stt.transcribe("tests/audio_input.mp3")
-
-remover = word_removal.WordRemover()
-times = remover.roided_remove(words,time,time[-1][-1])
-print(times)
 # save model to local path (optional)
 # model_dir = "/path/"
 # model = whisperx.load_model("large-v2", device, compute_type=compute_type, download_root=model_dir)

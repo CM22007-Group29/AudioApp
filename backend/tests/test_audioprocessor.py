@@ -46,25 +46,26 @@ def test_normalization():
     processor.saveFile('tests/test_processed_normalized.mp3')
 
 def test_STT():
-    path = 'tests/audio_input.mp3'
-    # Create an Audio instance
-    audioFile = Audio(path)
-    print("Input file duration: ", audioFile.getDuration())
-    
-    # Create the processing service instance
-    processor = AudioProcessingService(audioFile)
-    
-    # Process the audio (cutting it as specified)
-    cutStamps = processor.getTimestamps(betterVersion=True)
-    print(cutStamps)
-    processor.processAudio(cutStamps)
-    print("Processed file duration: ", processor.audio.duration_seconds)
+    output = []
+    for i in range(1, 5):
+        path = 'tests/audio_extended{0}.mp3'.format(i)
+        # Create an Audio instance
+        audioFile = Audio(path)
+        print("Input file duration: ", audioFile.getDuration())
+        
+        # Create the processing service instance
+        processor = AudioProcessingService(audioFile)
+        
+        # Process the audio (cutting it as specified)
+        cutStamps = processor.getTimestamps(betterVersion=True)
+        print(cutStamps)
+        processor.processAudio(cutStamps)
+        print("Processed file duration: ", processor.audio.duration_seconds)
 
-    # Save the processed audio using the processor's method
-    processor.saveFile('tests/test_processed1.mp3')
-    outputFile = Audio('tests/test_processed1.mp3')
-    processor = AudioProcessingService(outputFile)
-    cutStamps = processor.getTimestamps(betterVersion=True)
-    assert len(cutStamps) == 0
-
-test_STT()
+        # Save the processed audio using the processor's method
+        processor.saveFile("tests/test_processed{0}.mp3".format(i))
+        outputFile = Audio("tests/test_processed{0}.mp3".format(i))
+        processor = AudioProcessingService(outputFile)
+        cutStamps = processor.getTimestamps(betterVersion=True)
+        output.append(cutStamps)
+    assert len(output) == 0
