@@ -1,6 +1,9 @@
 services:
   backend:
-    build: backend
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    working_dir: /main
     command: python3 -m backend
     ports:
       - "4040:4040"
