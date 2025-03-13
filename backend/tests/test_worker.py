@@ -1,25 +1,11 @@
-# import sys
-# import os
-
-# Add the parent directory to sys.path
-# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
 from backend.app.models import db, User, UserPreferences
-from backend.app import create_app
 from backend.worker import WorkerProcess
-
-app = create_app()
-
-def give_app_context(func):
-    def wrapper_func():
-        with app.app_context():
-            func()
-    return wrapper_func
+from backend.tests import give_app_context
 
 @give_app_context
 def test_db_and_worker():
-    # audio_file_path = 'backend/tests/audio_input.mp3' #local path
-    audio_file_path = 'tests/audio_input.mp3' #docker path
+    audio_file_path = 'backend/tests/audio_input.mp3' #local path
+    # audio_file_path = 'tests/audio_input.mp3' #docker path
     # Check database is empty and delete all if not
     users = User.get_all()
     for user in users:

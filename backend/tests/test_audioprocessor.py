@@ -1,15 +1,9 @@
-import sys
-import os
-
-# Add the parent directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from AudioFile import Audio
-from AudioProcessor import AudioProcessingService
+from backend.AudioFile import Audio
+from backend.AudioProcessor import AudioProcessingService
 
 def test_audioprocessor():
-    # path = 'backend/tests/audio_input.mp3'
-    path = 'tests/audio_input.mp3'
+    # path = 'backend/tests/audio_input.mp3' # local path
+    path = 'tests/audio_input.mp3' # docker path
     # Create an Audio instance
     audioFile = Audio(path)
     print("Input file duration: ", audioFile.getDuration())
@@ -30,8 +24,8 @@ def test_normalization():
     """
     Test for normalization by looking at peak amplitude before and after.
     """
-    # path = 'backend/tests/audio_input.mp3'
-    path = 'tests/audio_input.mp3'
+    # path = 'backend/tests/audio_input.mp3' #local path
+    path = 'tests/audio_input.mp3' #docker path
     # Create an Audio instance
     audioFile = Audio(path)
 
@@ -80,8 +74,8 @@ def test_silence_removal():
     """
     Test for silence removal by looking at duration of clip.
     """
-    # path = 'backend/tests/audio_input.mp3'
-    path = 'tests/audio_input.mp3'
+    # path = 'backend/tests/audio_input.mp3' #local path
+    path = 'tests/audio_input.mp3' #docker path
     # Create an Audio instance
     audioFile = Audio(path)
 
@@ -102,3 +96,11 @@ def test_silence_removal():
 
     # If successful silenced audio duration less than or equal to original
     assert silenced_duration <= original_duration
+
+
+# if __name__ == '__main__':
+#     test_audioprocessor()
+#     test_normalization()
+#     test_STT()
+#     test_silence_removal()
+#     print("All tests passed!")
