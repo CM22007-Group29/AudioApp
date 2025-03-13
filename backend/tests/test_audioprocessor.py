@@ -6,7 +6,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from AudioFile import Audio
 from AudioProcessor import AudioProcessingService
+from tests import give_app_context
 
+@give_app_context
 def test_audioprocessor():
     # path = 'backend/tests/audio_input.mp3'
     path = 'tests/audio_input.mp3'
@@ -26,6 +28,7 @@ def test_audioprocessor():
     processor.saveFile('tests/test_processed1.mp3')
     assert processor.audio.duration_seconds < audioFile.getDuration()
 
+@give_app_context
 def test_normalization():
     """
     Test for normalization by looking at peak amplitude before and after.
@@ -54,6 +57,7 @@ def test_normalization():
     # If successful normalized peak should be greater than original
     assert normalized_peak > original_peak
 
+@give_app_context
 def test_STT():
     path = 'tests/test2.mp3'
     # Create an Audio instance
@@ -75,7 +79,7 @@ def test_STT():
     cutStamps = processor.getTimestamps()
     assert len(cutStamps) == 0
 
-
+@give_app_context
 def test_silence_removal():
     """
     Test for silence removal by looking at duration of clip.
