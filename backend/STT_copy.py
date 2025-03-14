@@ -15,7 +15,8 @@ class SpeachToText():
 
     def transcribe(self, audioPath):
         audio = whisperx.load_audio(audioPath)
-        result = self.model.transcribe(audio)
+        result = self.model.transcribe(audio, verbose=True)
+        print(result)
         model_a, metadata = whisperx.load_align_model(language_code=result["language"], device=self.device)
         result = whisperx.align(result["segments"], model_a, metadata, audio, self.device, return_char_alignments=False)
 
@@ -42,6 +43,29 @@ class SpeachToText():
         print(words)
         return time_tuples, words, scores
     
+import whisper
+from faster_whisper import WhisperModel
+import time
+
+
+model = whisper.load_model("turbo")
+model2 = WhisperModel("distil-large-v3",cpu_threads=8)
+totaltime1 = 0
+totaltime2 = 0
+for i in range(1, 4):
+    time1 = time.time()
+    result = model.transcribe("tests/audio_extended{0}.mp3".format(i),verbose=True)
+    time2 = time.time()
+    segs, _ = model2.transcribe("tests/audio_extended{0}.mp3".format(i),language="en")    
+    time3 = time.time()
+    print("Time for turbo: ", time2 - time1)
+    print("Time for faster: ", time3 - time2)
+    totaltime1 += time2 - time1
+    totaltime2 += time3 - time2
+    for seg in segs:
+        print(seg)
+print("Total time for turbo: ", totaltime1)
+print("Total time for faster: ", totaltime2)
 
 # save model to local path (optional)
 # model_dir = "/path/"

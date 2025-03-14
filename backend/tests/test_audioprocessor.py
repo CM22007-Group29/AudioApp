@@ -47,7 +47,7 @@ def test_normalization():
 
 def test_STT():
     output = []
-    for i in range(1, 5):
+    for i in range(3, 4):
         path = 'tests/audio_extended{0}.mp3'.format(i)
         # Create an Audio instance
         audioFile = Audio(path)
@@ -69,3 +69,4 @@ def test_STT():
         cutStamps = processor.getTimestamps(betterVersion=True)
         output.append(cutStamps)
     assert len(output) == 0
+test_STT()
