@@ -1,12 +1,21 @@
 import { createContext, useRef, useContext, useState, useEffect } from "react";
 
-type AudioState = {
+export type Word = {
+  word: string;
+  startTime: number;
+  endTime: number;
+  enabled: boolean;
+}
+
+export type AudioState = {
     source: string;
     audioRef: React.RefObject<HTMLAudioElement | null>;
     endTime: number | null;
     currentTime: number;
     setTime: (time: number) => void;
-    amp_data: number[];
+    ampData: number[];
+    wordData: Word[];
+    setAudioContext: React.Dispatch<React.SetStateAction<AudioState>> | null;
 }
 
 const AudioContext = createContext<AudioState | null>(null);
@@ -17,7 +26,7 @@ const getAmplitudeData = () => {
 
 export const AudioContextProvider = ({ children }: { children: React.ReactNode }) => {
   const audio = useRef<HTMLAudioElement>(null);
-  const [context, setContext] = useState<AudioState>({
+  const [audioContext, setAudioContext] = useState<AudioState>({
     source: "todo/path.mp3",
     audioRef: audio,
     endTime: null,
@@ -27,21 +36,48 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
         audio.current.currentTime = time;
       }
     },
-    amp_data: getAmplitudeData(),
+    ampData: getAmplitudeData(),
+    wordData: [
+      {
+        word: "Hello",
+        startTime: 0,
+        endTime: 100,
+        enabled: true
+      },
+      {
+        word: "my",
+        startTime: 150,
+        endTime: 270,
+        enabled: true
+      },
+      {
+        word: "name",
+        startTime: 270,
+        endTime: 350,
+        enabled: true
+      },
+      {
+        word: "is",
+        startTime: 400,
+        endTime: 500,
+        enabled: true
+      }
+    ],
+    setAudioContext: null
   });
 
   useEffect(() => {
-    if (context.audioRef.current && !context.endTime) {
-      setContext({
-        ...context,
-        endTime: context.audioRef.current.duration,
+    if (audioContext.audioRef.current && !audioContext.endTime) {
+      setAudioContext({
+        ...audioContext,
+        endTime: audioContext.audioRef.current.duration,
       });
     }
 
     const interval = setInterval(() => {
       if (audio.current?.currentTime) {
-        setContext({
-          ...context,
+        setAudioContext({
+          ...audioContext,
           currentTime: audio.current?.currentTime
         });
       }
@@ -49,10 +85,10 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
 
       //Clearing the interval
       return () => clearInterval(interval);
-  }, [context]);
+  }, [audioContext]);
 
   return (
-    <AudioContext.Provider value={context}>
+    <AudioContext.Provider value={{ ...audioContext, setAudioContext }}>
       <audio ref={audio}>
         <source src="audio_input.mp3" type="audio/mpeg" />  
       </audio>

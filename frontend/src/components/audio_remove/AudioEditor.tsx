@@ -1,4 +1,4 @@
-import { Container } from "@mui/material"
+import { Container, Stack } from "@mui/material"
 import { AudioContextProvider } from "../AudioProvider"
 import { Transport } from "../Transport"
 import { ProgressBar } from "../ProgressBar"
@@ -8,9 +8,11 @@ function AudioEditor() {
     return (
       <Container sx={{ marginTop: 1 }}>
         <AudioContextProvider>
-          <Waveform />
-          <ProgressBar />
-          <Transport />
+          <Stack direction="column" gap={2}>
+            <Transport />
+            <Waveform />
+            {/* <ProgressBar /> */}
+          </Stack>
         </AudioContextProvider>
       </Container>
     )
