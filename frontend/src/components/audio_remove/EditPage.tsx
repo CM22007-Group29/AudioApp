@@ -1,18 +1,20 @@
-import NormalisationCheckbox from "./user_preferences/Checkboxes"
-import SilenceSlider from "./user_preferences/Sliders"
-import { Stack } from "@mui/material"
+import SilenceLengthSlider from "./user_preferences/SilenceLengthSlider"
+import SilenceThresholdSlider from "./user_preferences/SilenceThresholdSlider"
+import NormalisationCheckbox from "./user_preferences/NormalisationCheckbox"
+import Grid from '@mui/material/Grid2';
 
 function EditPage() {
     return (
-        <>
-        <Stack spacing={4} className="flex flex-col items-center justify-center">
-            <div className="text-center mx-auto pt-5">
-                <h1 className="text-gray-900 text-balance text-white font-bold text-3xl md:text-4xl xl:text-5xl">Edit Page</h1>
-            </div>
-            <SilenceSlider /> 
+        <Grid container spacing={2} size={8} direction="column" 
+            sx={{
+            justifyContent: "flex-start",
+            alignItems: "center",
+            }}
+        >
+            <SilenceThresholdSlider />
+            <SilenceLengthSlider />
             <NormalisationCheckbox />
-        </Stack>
-        </>
+        </Grid>
     )
   }
   

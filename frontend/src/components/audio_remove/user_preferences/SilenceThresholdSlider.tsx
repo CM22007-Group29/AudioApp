@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import Slider from '@mui/material/Slider';
 
-export default function SilenceSlider() {
+export default function SilenceThresholdSlider() {
   // Create and set default value for slider
   const [value, setValue] = React.useState<number>(50);
 
@@ -12,8 +12,9 @@ export default function SilenceSlider() {
   };
 
   return (
-    <Box sx={{ width: 200 }}>
+    <Box sx={{ width: 400 }}>
       <Stack spacing={2} direction="row" sx={{ alignItems: 'center', mb: 1 }}>
+        <p className="text-white">Silence Threshold</p>
         <Slider 
           aria-label="Silence threshold"
           value={value} 
@@ -23,8 +24,8 @@ export default function SilenceSlider() {
             color: 'white'
           })}
         />
+        <p className="text-white">{value}</p>
       </Stack>
-      <p className="text-white">Selected Value: {value}</p>
     </Box>
   );
 }
