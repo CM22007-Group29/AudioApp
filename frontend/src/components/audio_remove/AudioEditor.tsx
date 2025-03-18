@@ -1,7 +1,6 @@
 import { Container, Stack } from "@mui/material"
 import { AudioContextProvider } from "../AudioProvider"
 import { Transport } from "../Transport"
-import { ProgressBar } from "../ProgressBar"
 import { Waveform } from "../Waveform"
 
 function AudioEditor() {
