@@ -10,7 +10,6 @@ function AudioEditor() {
           <Stack direction="column" gap={2}>
             <Transport />
             <Waveform />
-            {/* <ProgressBar /> */}
           </Stack>
         </AudioContextProvider>
       </Container>
