@@ -138,7 +138,8 @@ export const Waveform = () => {
               className={
                 `word-box
                 ${word.enabled ? "word-box-enabled" : "word-box-disabled"}
-            `}>
+              `}
+            >
               <IconButton onClick={toggleWord(i)}>
                 {
                   word.enabled ? 
