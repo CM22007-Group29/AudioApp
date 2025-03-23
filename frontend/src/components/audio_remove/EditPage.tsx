@@ -3,7 +3,7 @@ import SilenceLengthSlider from "./user_preferences/SilenceLengthSlider"
 import SilenceThresholdSlider from "./user_preferences/SilenceThresholdSlider"
 import NormalisationCheckbox from "./user_preferences/NormalisationCheckbox"
 import Grid from '@mui/material/Grid2';
-import Item from '@mui/material/Item';
+import Box from '@mui/material/Box';
 
 function EditPage() {
     const [silenceThreshold, setSilenceThreshold] = React.useState(50);
@@ -11,9 +11,10 @@ function EditPage() {
     const [checkedNormalisation, setCheckedNormalisation] = React.useState(true);
 
     return (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh'}}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
             <Grid size={4}>
-                <p className="text-black">Silence Threshold</p>
+                <p className="text-black" style={{ minWidth: '40px', textAlign: 'center' }}>Silence Threshold</p>
             </Grid>
 
             <Grid size={4}>
@@ -24,11 +25,11 @@ function EditPage() {
             </Grid>
 
             <Grid size={4}>
-                <p className="text-black">{silenceThreshold}</p>
+                <p className="text-black" style={{ minWidth: '40px', textAlign: 'center' }}>{silenceThreshold}</p>
             </Grid>
 
             <Grid size={4}>
-                <p className="text-black">Silence Length</p>
+                <p className="text-black" style={{ minWidth: '40px', textAlign: 'center' }}>Silence Length</p>
             </Grid>
 
             <Grid size={4}>
@@ -39,32 +40,23 @@ function EditPage() {
             </Grid>
 
             <Grid size={4}>
-                <p className="text-black">{silenceLength}</p>
+                <p className="text-black" style={{ minWidth: '40px', textAlign: 'center' }}>{silenceLength}</p>
             </Grid>
 
             <Grid size={4}>
-                <p className="text-black">Normalisation</p>
+                <p className="text-black" style={{ minWidth: '40px', textAlign: 'center' }}>Normalisation</p>
             </Grid>
-            <Grid size={4}>
+            <Grid size={4} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <NormalisationCheckbox 
                     check_normalisation={checkedNormalisation}
                     setCheckNormalisation={setCheckedNormalisation}
                 />
             </Grid>
             <Grid size={4}>
-                <p className="text-black">{checkedNormalisation ? "On" : "Off" }</p>
+                <p className="text-black" style={{ minWidth: '40px', textAlign: 'center' }}>{checkedNormalisation ? "On" : "Off" }</p>
             </Grid>
         </Grid>
-        // <Grid container spacing={2} size={8} direction="column" 
-        //     sx={{
-        //     justifyContent: "flex-start",
-        //     alignItems: "center",
-        //     }}
-        // >
-        //     <SilenceThresholdSlider />
-        //     <SilenceLengthSlider />
-        //     <NormalisationCheckbox />
-        // </Grid>
+        </Box>
     )
   }
   

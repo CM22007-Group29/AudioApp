@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router'
 import Features from "./components/Features"
 import GetStarted from "./components/audio_remove/GetStarted"
 import AudioEditor from "./components/audio_remove/AudioEditor"
+import EditPage from "./components/audio_remove/EditPage"
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path="features" element={<Features />} />
         <Route path="get-started" element={<GetStarted />} />
         <Route path="editor" element={<AudioEditor />} />
+        <Route path="edit" element={<EditPage />} />
       </Routes>
     </>
   )
