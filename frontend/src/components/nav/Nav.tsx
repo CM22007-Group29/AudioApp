@@ -20,6 +20,7 @@ const Nav: React.FC<{}> = () => {
                         <Button component={Link} to="/" sx={{ color: 'black'}}>Home</Button>
                         <Button component={Link} to="/edit" sx={{ color: 'black'}}>Edit</Button>
                         <Button component={Link} to="/features" sx={{ color: 'black'}}>Features</Button>
+                        <Button component={Link} to="/editor" sx={{ color: 'black'}}>Editor</Button>
                         <Button component={Link} to="/get-started" variant="contained" sx={{ backgroundColor: 'black', color: 'white', borderRadius: 28}}>Get Started</Button>
                     </Stack> 
                 </Toolbar>

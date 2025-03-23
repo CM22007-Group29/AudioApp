@@ -1,8 +1,8 @@
-from word_removal import WordRemover
-from STT import SpeachToText
+from .word_removal import WordRemover
+from .STT import SpeachToText
 from pydub import AudioSegment, effects, silence
 
-from AudioFile import Audio
+from .AudioFile import Audio
 
 class AudioProcessingService:
     def __init__(self, audioFile):

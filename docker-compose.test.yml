@@ -1,10 +1,11 @@
 services:
   backend:
     build: 
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: backend/Dockerfile
+    working_dir: /main
     volumes:
-      - ./backend/reports:/main/reports
-      - ./backend/htmlcov:/main/htmlcov
+      - ./backend/reports:/main/backend/reports
+      - ./backend/htmlcov:/main/backend/htmlcov
     command: >
-      sh -c "coverage run -m --source=. pytest --html=/main/reports/test_report.html tests/ || true && coverage report -m && coverage html"
+      sh -c "coverage run -m --source=backend pytest --html=/main/backend/reports/test_report.html backend/tests/ || true && coverage report -m && coverage html -d /main/backend/htmlcov"
