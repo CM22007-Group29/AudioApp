@@ -18,6 +18,7 @@ const Nav: React.FC<{}> = () => {
                     </IconButton>
                     <Stack direction='row' spacing={3} className='hidden md:flex'>
                         <Button component={Link} to="/" sx={{ color: 'black'}}>Home</Button>
+                        <Button component={Link} to="/edit" sx={{ color: 'black'}}>Edit</Button>
                         <Button component={Link} to="/features" sx={{ color: 'black'}}>Features</Button>
                         <Button component={Link} to="/get-started" variant="contained" sx={{ backgroundColor: 'black', color: 'white', borderRadius: 28}}>Get Started</Button>
                     </Stack> 
