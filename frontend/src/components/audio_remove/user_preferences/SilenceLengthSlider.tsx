@@ -1,18 +1,29 @@
 import Slider from '@mui/material/Slider';
 
-export default function SilenceLengthSlider({ silence_length, setSilenceLength }) {
+interface SilenceLengthSliderProps {
+  silence_length: number;
+  setSilenceLength: (value: number) => void;
+}
 
-  const handleChange = (event, newValue) => {
-    setSilenceLength(newValue);
+export default function SilenceLengthSlider({
+  silence_length,
+  setSilenceLength,
+}: SilenceLengthSliderProps) {
+
+  const handleChange = (_event: Event, newValue: number | number[]) => {
+    // Ensure newValue is a number, since it can also be an array in range sliders
+    if (typeof newValue === 'number') {
+      setSilenceLength(newValue);
+    }
   };
 
   return (
-        <Slider 
-          aria-label="Silence threshold"
-          value={silence_length}
-          onChange={handleChange} 
-          valueLabelDisplay="auto"
-          sx={{ color: 'black' }}
-        />
+    <Slider
+      aria-label="Silence threshold"
+      value={silence_length}
+      onChange={handleChange}
+      valueLabelDisplay="auto"
+      sx={{ color: 'black' }}
+    />
   );
 }

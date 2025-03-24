@@ -1,9 +1,16 @@
 import Slider from '@mui/material/Slider';
 
-export default function SilenceThresholdSlider({ silence_threshold, setSilenceThreshold }) {
+interface SilenceThresholdSliderProps {
+  silence_threshold: number;
+  setSilenceThreshold: (value: number) => void;
+}
 
-  const handleChange = (event, newValue) => {
-    setSilenceThreshold(newValue);
+export default function SilenceThresholdSlider({ silence_threshold, setSilenceThreshold }: SilenceThresholdSliderProps) {
+
+  const handleChange = (_event: Event, newValue: number | number[]) => {
+    if (typeof newValue === 'number') {
+      setSilenceThreshold(newValue);
+    }
   };
 
   return (
