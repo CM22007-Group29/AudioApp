@@ -8,6 +8,74 @@ from backend.tests import give_app_context
 
 
 @give_app_context
+def test_users():
+    with app.test_client() as client:
+        # 1. GET all users (expect 200)
+        resp = client.get("/api/users")
+        assert resp.status_code == 200
+
+        # 2. POST create a user (expect 201)
+        new_user = {"username": "user_test", "email": "user_test@example.com"}
+        resp = client.post("/api/users", json=new_user)
+        assert resp.status_code == 201
+        created_user = resp.get_json()
+        assert created_user["username"] == "user_test"
+    print("users test succeeded")
+
+
+@give_app_context
+def test_user_detail():
+    # Create a user in DB directly
+    user = User.create({"username": "detail_test", "email": "detail@example.com"})
+    user_id = user.id
+
+    with app.test_client() as client:
+        # 1. GET user (expect 200)
+        resp = client.get(f"/api/users/{user_id}")
+        assert resp.status_code == 200
+        assert resp.get_json()["username"] == "detail_test"
+
+        # 2. PUT update user (expect 200)
+        update_data = {"username": "detail_updated"}
+        resp = client.put(f"/api/users/{user_id}", json=update_data)
+        assert resp.status_code == 200
+        assert resp.get_json()["username"] == "detail_updated"
+
+        # 3. DELETE user (expect 200 and message)
+        resp = client.delete(f"/api/users/{user_id}")
+        assert resp.status_code == 200
+        assert b"deleted" in resp.data
+    
+    print("user detail test succeeded")
+
+
+@give_app_context
+def test_user_preferences():
+    # Create a user
+    user = User.create({"username": "pref_test", "email": "pref@example.com"})
+    user_id = user.id
+
+    with app.test_client() as client:
+        # 1. GET preferences for a user with none (expect 404)
+        resp = client.get(f"/api/users/{user_id}/preferences")
+        assert resp.status_code == 404
+
+        # 2. POST create user preferences (expect 201)
+        pref_data = {"normalise": True, "extra_words": "badword1 badword2"}
+        resp = client.post(f"/api/users/{user_id}/preferences", json=pref_data)
+        assert resp.status_code == 201
+        created_prefs = resp.get_json()
+        assert created_prefs["normalise"] is True
+
+        # 3. GET preferences again (expect 200)
+        resp = client.get(f"/api/users/{user_id}/preferences")
+        assert resp.status_code == 200
+        prefs = resp.get_json()
+        assert prefs["normalise"] is True
+        print("User preferences test succeeded")
+
+
+@give_app_context
 def test_audio():
     # Get and delete all users
     users = User.get_all()
