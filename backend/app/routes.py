@@ -14,7 +14,7 @@ def json_response(data, status=200):
     if data is None:
         return jsonify({"error": "Not found"}), 404
     if isinstance(data, list):
-        return jsonify([obj.to_dict() for obj in data]), status
+        return jsonify([obj.json() for obj in data]), status
     if hasattr(data, "to_dict"):
         return jsonify(data.to_dict()), status
     return jsonify(data), status
@@ -31,10 +31,13 @@ def users():
     """
 
     if request.method == "GET":
-        return json_response(User.get_all())
+        response = User.get_all()
+        # return json_response([user.json() for user in response], 200)
+        return json_response(response, 200)
     
     elif request.method == "POST":
-        return json_response(User.create(request.json), 201)
+        response = User.create(request.json)
+        return json_response(response.json(), 201)
 
 
 @api.route("/users/<int:user_id>", methods=["GET", "PUT", "DELETE"])
@@ -48,10 +51,12 @@ def user_detail(user_id):
     """
 
     if request.method == "GET":
-        return json_response(User.get_by_id(user_id))
+        response = User.get_by_id(user_id)
+        return json_response(response.json(), 200)
     
     elif request.method == "PUT":
-        return json_response(User.update(user_id, request.json))
+        response = User.update(user_id, request.json)
+        return json_response(response.json(), 200)
     
     elif request.method == "DELETE":
         deleted_id = User.delete(user_id)
