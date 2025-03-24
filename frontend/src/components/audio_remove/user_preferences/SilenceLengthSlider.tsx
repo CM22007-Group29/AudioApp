@@ -11,7 +11,6 @@ export default function SilenceLengthSlider({
 }: SilenceLengthSliderProps) {
 
   const handleChange = (_event: Event, newValue: number | number[]) => {
-    // Ensure newValue is a number, since it can also be an array in range sliders
     if (typeof newValue === 'number') {
       setSilenceLength(newValue);
     }
