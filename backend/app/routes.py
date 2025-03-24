@@ -106,8 +106,12 @@ def audio(user_id):
         filename = secure_filename(file.filename)
         if not filename:
             return json_response({"error": "Bad filename"}, 400)
+        
+        file_type = filename.split(".")[-1]
+        if file_type not in current_app.config.get("ALLOWED_EXTENSIONS"):
+            return json_response({"error": "Bad file type"}, 400)
 
-        upload_folder = current_app.config.get("UPLOAD_FOLDER", "uploads")
+        upload_folder = current_app.config.get("UPLOAD_FOLDER")
         os.makedirs(upload_folder, exist_ok=True)
         file_path = os.path.join(upload_folder, filename)
         file.save(file_path)
@@ -117,7 +121,9 @@ def audio(user_id):
             return json_response(None, 404)
 
         user.upload_audio({"file_path": file_path})
-        return json_response({"message": "Audio uploaded"}, 201)
+        return json_response({"message"  : "Audio uploaded",
+                              "file_path":  file_path,
+                              "audio_id" : user.get_audio().id}, 201)
 
     elif request.method == "GET":
         user = User.get_by_id(user_id)
