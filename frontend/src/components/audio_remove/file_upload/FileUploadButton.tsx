@@ -1,6 +1,7 @@
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
 import FolderIcon from '@mui/icons-material/Folder';
+import { useAuth } from '../../../context/AuthContext';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -15,7 +16,8 @@ const VisuallyHiddenInput = styled('input')({
 });
 
 export default function InputFileUpload({ setFileUploaded }: { setFileUploaded: (uploaded: boolean) => void }) {
-  const userId = 1; // would be fetched from signed in user
+  const { user } = useAuth();
+  const userId = user?.id;
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files || event.target.files.length === 0) {
