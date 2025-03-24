@@ -3,7 +3,7 @@ import os
 from io import BytesIO
 
 from flask import current_app as app
-from backend.app.models import db, User, Audio
+from backend.app.models import db, User, Audio, UserPreferences
 from backend.tests import give_app_context
 
 
@@ -44,6 +44,49 @@ def test_audio():
         assert response.data.startswith(b"\x00\xFF"), "Audio content mismatch"
         print("audio content matched")
 
+@give_app_context
+def test_audio_process():
+    # Clean up any existing users and audio
+    for user in User.get_all():
+        User.delete(user.id)
+    for audio_entry in Audio.get_all():
+        Audio.delete(audio_entry.id)
+    for prefs in UserPreferences.get_all():
+        UserPreferences.delete(prefs.id)
+
+    # Create a user to associate with uploaded audio
+    user = User.create({'username': 'test_process', 'email': 'process@audio.com'})
+    # Create preferences for the user
+    UserPreferences.create({'user_id': user.id, 'normalise': True, 'extra_words':"balls dick"})   
+
+    audio_path = os.path.join('backend/tests/audio_input.mp3')
+    with open(audio_path, 'rb') as f:
+        audio_content = f.read()
+
+    data = {
+        'audio': (BytesIO(audio_content), "audio_input.mp3")
+    }
+
+    with app.test_client() as client:
+        # 1. Upload audio
+        upload_resp = client.post(
+            f'/api/audio/{user.id}',
+            data=data,
+            content_type='multipart/form-data'
+        )
+        assert upload_resp.status_code == 201, f"Audio upload failed: {upload_resp.data}"
+
+        # 2. Process the uploaded audio
+        process_resp = client.post(f'/api/audio/{user.id}/process')
+        assert process_resp.status_code == 201, f"Audio processing failed: {process_resp.data}"
+
+        # 3. Check JSON return
+        resp_json = process_resp.get_json()
+        assert 'output_path' in resp_json, "Missing 'output_path' in response"
+        assert 'timestamps' in resp_json, "Missing 'timestamps' in response"
+        print("Audio processing test succeeded:", resp_json)
+
 
 if __name__ == '__main__':
     test_audio() 
+    test_audio_process()
