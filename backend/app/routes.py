@@ -159,5 +159,5 @@ def process_audio(user_id):
     output_path, timestamps = worker.process_audio_for_user()
 
     # upload to db
-    user.upload_processed_audio({"file_path": output_path}) ## need to make it so that can differentate between processed and unprocessed audio
+    user.upload_processed_audio({"file_path": output_path})
     return json_response({"output_path": output_path, "timestamps": timestamps}, 201)
