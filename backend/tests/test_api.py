@@ -68,6 +68,7 @@ def test_audio_process():
     }
 
     with app.test_client() as client:
+        #POST
         # 1. Upload audio
         upload_resp = client.post(
             f'/api/audio/{user.id}',
@@ -84,7 +85,13 @@ def test_audio_process():
         resp_json = process_resp.get_json()
         assert 'output_path' in resp_json, "Missing 'output_path' in response"
         assert 'timestamps' in resp_json, "Missing 'timestamps' in response"
-        print("Audio processing test succeeded:", resp_json)
+        print("Audio processing POST test succeeded:", resp_json)
+
+        # GET
+        # 4. Download processed audio
+        download_resp = client.get(f'/api/audio/{user.id}/process')
+        assert download_resp.status_code == 200, f"Failed to download processed audio: {download_resp.data}"
+        print("Audio processing GET test succeeded")
 
 
 if __name__ == '__main__':
