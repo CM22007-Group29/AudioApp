@@ -49,7 +49,8 @@ def test_STT():
     output = []
     import time
     totalTime = 0
-    for i in range(1, 5):
+    #change to 1,5 if you wanna test the other audio files
+    for i in range(4,5):
         time1 = time.time()
         path = 'tests/audio_extended{0}.mp3'.format(i)
         # Create an Audio instance
@@ -60,7 +61,7 @@ def test_STT():
         processor = AudioProcessingService(audioFile)
         
         # Process the audio (cutting it as specified)
-        cutStamps = processor.getTimestamps(betterVersion=True)
+        cutStamps = processor.getTimestamps()
         print(cutStamps)
         processor.processAudio(cutStamps)
         print("Processed file duration: ", processor.audio.duration_seconds)
@@ -71,7 +72,7 @@ def test_STT():
         time2 = time.time()
         totalTime += time2 - time1
         processor = AudioProcessingService(outputFile)
-        cutStamps = processor.getTimestamps(betterVersion=True)
+        cutStamps = processor.getTimestamps()
         if len(cutStamps) > 0:
             output.append(cutStamps)
     print("Time for processing: ", totalTime)

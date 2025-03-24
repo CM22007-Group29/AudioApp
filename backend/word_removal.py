@@ -6,15 +6,7 @@ class WordRemover():
         self.score = score
         self.linInterpolation = 0.5
 
-    def remove(self, words, timestamps):
-        times_to_remove = []
-        for i, word in enumerate(words):
-            print(word)
-            if re.sub(r'[^a-zA-Z0-9]', '', word.lower()) in self.words.union(self.swears):
-                times_to_remove.append(timestamps[i])
-        return times_to_remove
-    
-    def roided_remove(self, words, timestamps,audioLength = None):
+    def remove(self, words, timestamps,audioLength = None):
         if not audioLength:
             audioLength = timestamps[-1][-1]
         times_to_remove = []
@@ -25,7 +17,7 @@ class WordRemover():
         for i, word in enumerate(words[1:-1]):
             i += 1
             if re.sub(r'[^a-zA-Z0-9]', '', word.lower()) in self.words.union(self.swears):
-                times_to_remove.append((int(timestamps[i-1][1] * 0.7 + timestamps[i][0] * 0.3), int(timestamps[i][1] * 0.3 + timestamps[i+1][0] * 0.7 )))
+                times_to_remove.append((int(timestamps[i-1][1] * 0.8 + timestamps[i][0] * 0.2), int(timestamps[i][1] * 0.25 + timestamps[i+1][0] * 0.75 )))
             if "..." in word:
-                times_to_remove.append((int(timestamps[i][1] * 0.7 + timestamps[i+1][0] * 0.3), int(timestamps[i][0] * 0.3 + timestamps[i+1][0] * 0.7)))
+                times_to_remove.append((int(timestamps[i][1] * 0.8 + timestamps[i+1][0] * 0.2), int(timestamps[i][0] * 0.25 + timestamps[i+1][0] * 0.75)))
         return times_to_remove
