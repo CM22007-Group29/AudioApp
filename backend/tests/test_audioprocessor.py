@@ -47,7 +47,10 @@ def test_normalization():
 
 def test_STT():
     output = []
-    for i in range(3, 4):
+    import time
+    totalTime = 0
+    for i in range(1, 5):
+        time1 = time.time()
         path = 'tests/audio_extended{0}.mp3'.format(i)
         # Create an Audio instance
         audioFile = Audio(path)
@@ -65,8 +68,13 @@ def test_STT():
         # Save the processed audio using the processor's method
         processor.saveFile("tests/test_processed{0}.mp3".format(i))
         outputFile = Audio("tests/test_processed{0}.mp3".format(i))
+        time2 = time.time()
+        totalTime += time2 - time1
         processor = AudioProcessingService(outputFile)
         cutStamps = processor.getTimestamps(betterVersion=True)
-        output.append(cutStamps)
+        if len(cutStamps) > 0:
+            output.append(cutStamps)
+    print("Time for processing: ", totalTime)
+    print(output)
     assert len(output) == 0
 test_STT()

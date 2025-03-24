@@ -6,3 +6,4 @@ onnxruntime
 torchaudio
 Flask-SQLAlchemy
 whisper_timestamped
+whisperx
