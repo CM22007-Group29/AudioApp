@@ -140,24 +140,40 @@ def audio(user_id):
 
     return json_response(None, 404)
 
-@api.route("/audio/<int:user_id>/process", methods=["POST"])
+
+@api.route("/audio/<int:user_id>/process", methods=["POST", "GET"])
 def process_audio(user_id):
     """
         Process audio with /api/audio/{user_id}/process
         POST /api/audio/{user_id}/process processes audio
+        GET /api/audio/{user_id}/process gets processed audio
     """
+    if request.method == "POST":
+        user = User.get_by_id(user_id)
+        if not user:
+            return json_response(None, 404)
 
-    user = User.get_by_id(user_id)
-    if not user:
-        return json_response(None, 404)
+        audio_entry = user.get_audio()
+        if not audio_entry or not os.path.exists(audio_entry.file_path):
+            return json_response(None, 404)
 
-    audio_entry = user.get_audio()
-    if not audio_entry or not os.path.exists(audio_entry.file_path):
-        return json_response(None, 404)
+        worker = WorkerProcess(user_id, audio_entry.file_path)
+        output_path, timestamps = worker.process_audio_for_user()
 
-    worker = WorkerProcess(user_id, audio_entry.file_path)
-    output_path, timestamps = worker.process_audio_for_user()
+        # upload to db
+        user.upload_processed_audio({"file_path": output_path})
+        return json_response({"output_path": output_path, "timestamps": timestamps}, 201)
+    elif request.method == "GET":
+        user = User.get_by_id(user_id)
+        if not user:
+            return json_response(None, 404)
 
-    # upload to db
-    user.upload_processed_audio({"file_path": output_path})
-    return json_response({"output_path": output_path, "timestamps": timestamps}, 201)
+        audio_entry = user.get_audio("processed")
+        if not audio_entry or not os.path.exists(audio_entry.file_path):
+            return json_response(None, 404)
+
+        dir_path = os.path.dirname(audio_entry.file_path)
+        file_name = os.path.basename(audio_entry.file_path)
+        return send_from_directory(directory=dir_path, path=file_name)
+
+    return json_response(None, 404)
