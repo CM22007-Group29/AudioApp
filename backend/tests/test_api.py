@@ -166,8 +166,8 @@ def test_audio_process():
 
 
 if __name__ == '__main__':
-    test_users()
-    test_user_detail()
-    test_user_preferences()
+    # test_users()
+    # test_user_detail()
+    # test_user_preferences()
     test_audio() 
     test_audio_process()
