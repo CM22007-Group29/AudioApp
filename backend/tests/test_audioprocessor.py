@@ -73,8 +73,8 @@ def test_STT():
         print("Processed file duration: ", processor.audio.duration_seconds)
 
         # Save the processed audio using the processor's method
-        processor.saveFile("tests/test_processed{0}.mp3".format(i))
-        outputFile = Audio("tests/test_processed{0}.mp3".format(i))
+        processor.saveFile("backend/tests/test_processed{0}.mp3".format(i))
+        outputFile = Audio("backend/tests/test_processed{0}.mp3".format(i))
         time2 = time.time()
         totalTime += time2 - time1
         processor = AudioProcessingService(outputFile)
