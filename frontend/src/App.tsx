@@ -6,6 +6,7 @@ import GetStarted from "./components/audio_remove/GetStarted";
 import Nav from "./components/nav/Nav";
 import { useAuth } from "./context/AuthProvider";
 import AudioEditor from "./components/audio_remove/AudioEditor";
+import EditPage from "./components/audio_remove/EditPage"
 
 function App() {
   const { user } = useAuth();
