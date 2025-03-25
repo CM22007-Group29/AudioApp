@@ -6,7 +6,7 @@ import { useAuth } from "../../context/AuthProvider";
 
 const Nav: React.FC = () => {
   const { user, logout } = useAuth();
-
+  
   return (
     <div className="w-full bg-[#262626] flex justify-center py-2">
       <AppBar
@@ -20,7 +20,9 @@ const Nav: React.FC = () => {
           </IconButton>
           <Stack direction="row" spacing={3} className="hidden md:flex">
             <Button component={Link} to="/" sx={{ color: "black" }}>Home</Button>
-            <Button component={Link} to="/features" sx={{ color: "black" }}>Features</Button>
+            <Button component={Link} to="/features" sx={{ color: 'black'}}>Features</Button>
+            <Button component={Link} to="/editor" sx={{ color: 'black'}}>Editor</Button>
+            <Button component={Link} to="/get-started" variant="contained" sx={{ backgroundColor: 'black', color: 'white', borderRadius: 28}}>Get Started</Button>
             {user ? (
               <Button onClick={logout} variant="contained" sx={{ backgroundColor: "red", color: "white", borderRadius: 28 }}>
                 Logout

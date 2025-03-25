@@ -17,6 +17,7 @@ function App() {
         <Route path="features" element={<Features />} />
         <Route path="login" element={<Login />} />
         <Route path="get-started" element={user ? <GetStarted /> : <Login />} />
+        <Route path="editor" element={<AudioEditor />} />
       </Routes>
     </>
   );
