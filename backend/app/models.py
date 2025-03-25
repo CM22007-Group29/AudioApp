@@ -74,10 +74,16 @@ class User(BaseModel):
     
     def upload_audio(self, data):
         data['user_id'] = self.id
+        data['status'] = 'uploaded'
         return Audio.create(data)
     
-    def get_audio(self):
-        return Audio.query.filter_by(user_id=self.id).first()
+    def upload_processed_audio(self, data):
+        data['user_id'] = self.id
+        data['status'] = 'processed'
+        return Audio.create(data)
+    
+    def get_audio(self, status="uploaded"):
+        return Audio.query.filter_by(user_id=self.id, status=status).first()
     
 
 class UserPreferences(BaseModel):
@@ -105,6 +111,7 @@ class Audio(BaseModel):
 
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     file_path = db.Column(db.String, nullable=False)
+    status = db.Column(db.String, nullable=True, default='uploaded')
     user = db.relationship('User', backref=db.backref('audio', lazy=True))
 
     def json(self):

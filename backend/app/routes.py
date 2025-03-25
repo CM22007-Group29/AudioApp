@@ -14,7 +14,7 @@ def json_response(data, status=200):
     if data is None:
         return jsonify({"error": "Not found"}), 404
     if isinstance(data, list):
-        return jsonify([obj.to_dict() for obj in data]), status
+        return jsonify([obj.json() for obj in data]), status
     if hasattr(data, "to_dict"):
         return jsonify(data.to_dict()), status
     return jsonify(data), status
@@ -31,10 +31,13 @@ def users():
     """
 
     if request.method == "GET":
-        return json_response(User.get_all())
+        response = User.get_all()
+        # return json_response([user.json() for user in response], 200)
+        return json_response(response, 200)
     
     elif request.method == "POST":
-        return json_response(User.create(request.json), 201)
+        response = User.create(request.json)
+        return json_response(response.json(), 201)
 
 
 @api.route("/users/<int:user_id>", methods=["GET", "PUT", "DELETE"])
@@ -48,10 +51,12 @@ def user_detail(user_id):
     """
 
     if request.method == "GET":
-        return json_response(User.get_by_id(user_id))
+        response = User.get_by_id(user_id)
+        return json_response(response.json(), 200)
     
     elif request.method == "PUT":
-        return json_response(User.update(user_id, request.json))
+        response = User.update(user_id, request.json)
+        return json_response(response.json(), 200)
     
     elif request.method == "DELETE":
         deleted_id = User.delete(user_id)
@@ -106,8 +111,12 @@ def audio(user_id):
         filename = secure_filename(file.filename)
         if not filename:
             return json_response({"error": "Bad filename"}, 400)
+        
+        file_type = filename.split(".")[-1]
+        if file_type not in current_app.config.get("ALLOWED_EXTENSIONS"):
+            return json_response({"error": "Bad file type"}, 400)
 
-        upload_folder = current_app.config.get("UPLOAD_FOLDER", "uploads")
+        upload_folder = current_app.config.get("UPLOAD_FOLDER")
         os.makedirs(upload_folder, exist_ok=True)
         file_path = os.path.join(upload_folder, filename)
         file.save(file_path)
@@ -117,7 +126,9 @@ def audio(user_id):
             return json_response(None, 404)
 
         user.upload_audio({"file_path": file_path})
-        return json_response({"message": "Audio uploaded"}, 201)
+        return json_response({"message"  : "Audio uploaded",
+                              "file_path":  file_path,
+                              "audio_id" : user.get_audio().id}, 201)
 
     elif request.method == "GET":
         user = User.get_by_id(user_id)
@@ -134,21 +145,40 @@ def audio(user_id):
 
     return json_response(None, 404)
 
-@api.route("/audio/<int:user_id>/process", methods=["POST"])
+
+@api.route("/audio/<int:user_id>/process", methods=["POST", "GET"])
 def process_audio(user_id):
     """
         Process audio with /api/audio/{user_id}/process
         POST /api/audio/{user_id}/process processes audio
+        GET /api/audio/{user_id}/process gets processed audio
     """
+    if request.method == "POST":
+        user = User.get_by_id(user_id)
+        if not user:
+            return json_response(None, 404)
 
-    user = User.get_by_id(user_id)
-    if not user:
-        return json_response(None, 404)
+        audio_entry = user.get_audio()
+        if not audio_entry or not os.path.exists(audio_entry.file_path):
+            return json_response(None, 404)
 
-    audio_entry = user.get_audio()
-    if not audio_entry or not os.path.exists(audio_entry.file_path):
-        return json_response(None, 404)
+        worker = WorkerProcess(user_id, audio_entry.file_path)
+        output_path, timestamps = worker.process_audio_for_user()
 
-    worker = WorkerProcess(user_id, audio_entry.file_path)
-    output_path, timestamps = worker.process_audio_for_user()
-    return json_response({"output_path": output_path, "timestamps": timestamps}, 201)
+        # upload to db
+        user.upload_processed_audio({"file_path": output_path})
+        return json_response({"output_path": output_path, "timestamps": timestamps}, 201)
+    elif request.method == "GET":
+        user = User.get_by_id(user_id)
+        if not user:
+            return json_response(None, 404)
+
+        audio_entry = user.get_audio("processed")
+        if not audio_entry or not os.path.exists(audio_entry.file_path):
+            return json_response(None, 404)
+
+        dir_path = os.path.dirname(audio_entry.file_path)
+        file_name = os.path.basename(audio_entry.file_path)
+        return send_from_directory(directory=dir_path, path=file_name)
+
+    return json_response(None, 404)
