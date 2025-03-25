@@ -182,3 +182,25 @@ def process_audio(user_id):
         return send_from_directory(directory=dir_path, path=file_name)
 
     return json_response(None, 404)
+
+@api.route("/audio/<int:user_id>/timestamps", methods=["POST", "GET"])
+def get_timestamps(user_id):
+    """
+        Get word and timestamps with /audio/<int:user_id>/timestamps
+        GET /audio/<int:user_id>/timestamps gets words and timestamps
+    """
+    if request.method == "GET":
+        user = User.get_by_id(user_id)
+        if not user:
+            return json_response(None, 404)
+
+        audio_entry = user.get_audio()
+        if not audio_entry or not os.path.exists(audio_entry.file_path):
+            return json_response(None, 404)
+
+        worker = WorkerProcess(user_id, audio_entry.file_path)
+        word_timestamps = worker.get_word_timestamps()
+
+        return json_response({"word_timestamps": word_timestamps}, 200)
+    
+    return json_response(None, 404)

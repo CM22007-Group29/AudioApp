@@ -30,7 +30,7 @@ class SpeachToText():
                     score = word_data.get("score") 
                     word = word_data.get("word")
                     if start is not None and end is not None and  word is not None and score is not None:
-                        time_tuples.append((start * 1000 , end * 1000))
+                        time_tuples.append((int(start * 1000) , int(end * 1000)))
                         words.append(word)
                         scores.append(score)
 

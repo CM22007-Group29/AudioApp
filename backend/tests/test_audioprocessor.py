@@ -67,7 +67,7 @@ def test_STT():
         processor = AudioProcessingService(audioFile)
         
         # Process the audio (cutting it as specified)
-        cutStamps = processor.getTimestamps()
+        cutStamps = processor.getCutstamps()
         print(cutStamps)
         processor.processAudio(cutStamps)
         print("Processed file duration: ", processor.audio.duration_seconds)
@@ -78,7 +78,7 @@ def test_STT():
         time2 = time.time()
         totalTime += time2 - time1
         processor = AudioProcessingService(outputFile)
-        cutStamps = processor.getTimestamps()
+        cutStamps = processor.getCutstamps()
         if len(cutStamps) > 0:
             output.append(cutStamps)
     print("Time for processing: ", totalTime)
@@ -112,10 +112,25 @@ def test_silence_removal():
     # If successful silenced audio duration less than or equal to original
     assert silenced_duration <= original_duration
 
+def test_word_timestamps():
+    for i in range(1,5):
+        path = 'backend/tests/audio_extended{0}.mp3'.format(i)
+        
+        audioFile = Audio(path)
+        
+        processor = AudioProcessingService(audioFile)
+        
+        word_timesamps = processor.getWordsTimestamps()
+        print(word_timesamps)
+        print(word_timesamps.json())
+        assert len(word_timesamps) > 0
+        assert len(word_timesamps[0]) == 2
+        assert len(word_timesamps[0][1]) == 2
 
-# if __name__ == '__main__':
-#     test_audioprocessor()
-#     test_normalization()
-#     test_STT()
-#     test_silence_removal()
-#     print("All tests passed!")
+if __name__ == '__main__':
+    test_word_timestamps()
+    test_audioprocessor()
+    test_normalization()
+    test_STT()
+    test_silence_removal()
+    print("All tests passed!")
