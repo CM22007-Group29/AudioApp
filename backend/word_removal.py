@@ -6,6 +6,11 @@ class WordRemover():
         self.score = score
         self.linInterpolation = 0.5
 
+    def update_words(self, add):
+        list_add = add.split(" ")
+        for x in list_add:
+            self.swears.add(x)
+    
     def remove(self, words, timestamps,audioLength = None):
         if not audioLength:
             audioLength = timestamps[-1][-1]

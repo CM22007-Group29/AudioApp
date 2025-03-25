@@ -1,15 +1,10 @@
-import sys
-import os
+from backend.AudioFile import Audio
+from backend.AudioProcessor import AudioProcessingService
 
-# Add the parent directory to sys.path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-from AudioFile import Audio
-from AudioProcessor import AudioProcessingService
 
 def test_audioprocessor():
-    # path = 'backend/tests/audio_input.mp3'
-    path = 'tests/audio_input.mp3'
+    path = 'backend/tests/audio_input.mp3' # local path
+    # path = 'tests/audio_input.mp3' # docker path
     # Create an Audio instance
     audioFile = Audio(path)
     print("Input file duration: ", audioFile.getDuration())
@@ -23,27 +18,38 @@ def test_audioprocessor():
 
     # Save the processed audio using the processor's method
     # processor.saveFile('backendtests/test_processed1.mp3')
-    processor.saveFile('tests/test_processed1.mp3')
+    processor.saveFile('backend/tests/test_processed.mp3')
     assert processor.audio.duration_seconds < audioFile.getDuration()
 
+
 def test_normalization():
-    # path = 'backend/tests/audio_input.mp3'
-    path = 'tests/audio_input.mp3'
+    """
+    Test for normalization by looking at peak amplitude before and after.
+    """
+    path = 'backend/tests/audio_input.mp3' #local path
+    # path = 'tests/audio_input.mp3' #docker path
     # Create an Audio instance
     audioFile = Audio(path)
-    print("Input file duration: ", audioFile.getDuration())
-    
+
     # Create the processing service instance
     processor = AudioProcessingService(audioFile)
-    
-    # Process the audio (cutting it as specified)
-    # And run with normalization this time
-    processor.processAudio([(2020, 3020)], True)
-    print("Processed file duration: ", processor.audio.duration_seconds)
 
-    # Save the processed audio using the processor's method
-    # processor.saveFile('backendtests/test_processed1.mp3')
-    processor.saveFile('tests/test_processed_normalized.mp3')
+    # Get peak before normalizing
+    original_peak = processor.audio.max_dBFS
+    
+    # Process the audio (with normalization enabled)
+    # And run with normalization this time
+    processor.processAudio(normalize=True)
+
+    # Get peak after normalizing
+    normalized_peak = processor.audio.max_dBFS
+
+    # Save the processed audio using the processor's method to check if difference can be heard
+    processor.saveFile('backend/tests/test_processed_normalized.mp3')
+
+    # If successful normalized peak should be greater than original
+    assert normalized_peak > original_peak
+
 
 def test_STT():
     output = []
@@ -52,7 +58,7 @@ def test_STT():
     #change to 1,5 if you wanna test the other audio files
     for i in range(4,5):
         time1 = time.time()
-        path = 'tests/audio_extended{0}.mp3'.format(i)
+        path = 'backend/tests/audio_extended{0}.mp3'.format(i)
         # Create an Audio instance
         audioFile = Audio(path)
         print("Input file duration: ", audioFile.getDuration())
@@ -78,4 +84,38 @@ def test_STT():
     print("Time for processing: ", totalTime)
     print(output)
     assert len(output) == 0
-test_STT()
+    
+def test_silence_removal():
+    """
+    Test for silence removal by looking at duration of clip.
+    """
+    path = 'backend/tests/audio_input.mp3' #local path
+    # path = 'tests/audio_input.mp3' #docker path
+    # Create an Audio instance
+    audioFile = Audio(path)
+
+    # Create the processing service instance
+    processor = AudioProcessingService(audioFile)
+
+    # Get duration before silence removal
+    original_duration = processor.audio.duration_seconds
+    
+    # Process the audio (with a silence length of 0.5 and a low threshold)
+    processor.processAudio(silence_length=1, silence_threshold=-40)
+
+    # Get duration after silence removal
+    silenced_duration = processor.audio.duration_seconds
+
+    # Save the processed audio using the processor's method to check if difference can be heard
+    processor.saveFile('backend/tests/test_silence_removal.mp3')
+
+    # If successful silenced audio duration less than or equal to original
+    assert silenced_duration <= original_duration
+
+
+# if __name__ == '__main__':
+#     test_audioprocessor()
+#     test_normalization()
+#     test_STT()
+#     test_silence_removal()
+#     print("All tests passed!")

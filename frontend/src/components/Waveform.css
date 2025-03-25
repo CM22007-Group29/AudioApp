@@ -1,0 +1,30 @@
+.word-container {
+    position: absolute;
+    height: 190px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.word-box {
+    width: 100%;
+    border-radius: 10px;
+    height: 150px;
+    pointer-events: none;
+}
+
+.word-box-enabled {
+    background-color: rgba(0, 255, 88, 0.3);
+}
+
+.word-box-disabled {
+    background-color: rgba(255, 0, 0, 0.3);
+}
+
+.word-box .MuiIconButton-root {
+    position: absolute;
+    top: 0;
+    right: 0;
+    z-index: 999;
+    pointer-events: all;
+}
