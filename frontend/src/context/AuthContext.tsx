@@ -1,8 +1,9 @@
 import { createContext, useContext } from "react";
+import { User } from "../types/User";
 
 // Define authentication context
 interface AuthContextType {
-  user: string | null;
+  user: User | null;
   login: (username: string) => void;
   logout: () => void;
 }

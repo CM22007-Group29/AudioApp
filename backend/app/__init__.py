@@ -13,6 +13,7 @@ login_manager = LoginManager()
 def create_app():
     # init app
     app = Flask(__name__)
+    app.secret_key = os.getenv("SECRET_KEY", "key")
 
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///coursework.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False

@@ -155,7 +155,7 @@ def audio(user_id):
 
         dir_path = os.path.dirname(audio_entry.file_path)
         file_name = os.path.basename(audio_entry.file_path)
-        return send_from_directory(directory=dir_path, path=file_name)
+        return send_from_directory(directory=dir_path, path=file_name, mimetype="audio/mpeg", as_attachment=True)
 
     return json_response(None, 404)
 
@@ -204,7 +204,8 @@ def process_audio(user_id):
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method=='POST':
-        username = request.form.get('username')
+        # username = request.form.get('username')
+        username = request.get_json()["username"]
         # password = request.form.get('password')
         # remember = True if request.form.get('remember') else False
 

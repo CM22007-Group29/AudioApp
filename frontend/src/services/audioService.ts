@@ -13,6 +13,7 @@ export const uploadAudio = async (user_id: number, file: FormData): Promise<Audi
 
 export const getAudio = async (user_id: number): Promise<File> => {
     const response = await api.get(`/audio/${user_id}`)
+    console.log(response)
     return response.data
 }
 

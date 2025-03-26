@@ -1,4 +1,6 @@
 import { createContext, useRef, useContext, useState, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { getAudio } from "../services/audioService";
 
 export type Word = {
   word: string;
@@ -25,6 +27,7 @@ const getAmplitudeData = () => {
 }
 
 export const AudioContextProvider = ({ children }: { children: React.ReactNode }) => {
+  const { user } = useAuth();
   const audio = useRef<HTMLAudioElement>(null);
   const [audioContext, setAudioContext] = useState<AudioState>({
     source: "todo/path.mp3",
@@ -90,7 +93,7 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
   return (
     <AudioContext.Provider value={{ ...audioContext, setAudioContext }}>
       <audio ref={audio}>
-        <source src="audio_input.mp3" type="audio/mpeg" />  
+        <source src={ audioContext.source } type="audio/mpeg" />  
       </audio>
       {children}
     </AudioContext.Provider>
