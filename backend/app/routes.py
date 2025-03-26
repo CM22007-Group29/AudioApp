@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request, current_app, send_from_directory, redirect, url_for
-from flask_login import login_user
+from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import User
@@ -217,16 +217,26 @@ def signup():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        user = User.query.filter_by(email=email).first()
+        user = User.query.filter_by(username=username).first()
 
         if user:
-            return redirect(url_for('auth.signup'))
+            return jsonify({"message": f"User already exists"}, 400)
 
         new_user = {"email": email, "username": username, "password": generate_password_hash(password, method='sha256')}
-        User.create(new_user)
+        
+        response = User.create(new_user)
 
-        return redirect(url_for('auth.login'))
+        # currently only sends id, username and email
+        return json_response(response.json(), 201)
 
-@auth.route('/logout')
-def logout():
-    return 'Logout'
+
+@auth.route('/logout/<int:user_id>', methods=['GET'])
+@login_required
+def logout(user_id):
+    if request.method == 'GET':
+        user = User.get_by_id(user_id)
+        if user:
+            logout_user(user)
+            return json_response(None, 200)
+        
+        return json_response(None, 404)
