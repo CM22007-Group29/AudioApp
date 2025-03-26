@@ -7,4 +7,5 @@ torchaudio
 Flask-SQLAlchemy
 whisper_timestamped
 flask-cors
+whisperx
 flask-login

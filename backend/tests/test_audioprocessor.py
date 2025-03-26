@@ -13,7 +13,7 @@ def test_audioprocessor():
     processor = AudioProcessingService(audioFile)
     
     # Process the audio (cutting it as specified)
-    processor.processAudio([(2020, 3020)])
+    processor.processAudio([(2400, 2700)])
     print("Processed file duration: ", processor.audio.duration_seconds)
 
     # Save the processed audio using the processor's method
@@ -52,28 +52,39 @@ def test_normalization():
 
 
 def test_STT():
-    # path = 'tests/test2.mp3'
-    path = 'backend/tests/test2.mp3' 
-    # Create an Audio instance
-    audioFile = Audio(path)
-    print("Input file duration: ", audioFile.getDuration())
+    output = []
+    import time
+    totalTime = 0
+    #change to 1,5 if you wanna test the other audio files
+    for i in range(4,5):
+        time1 = time.time()
+        path = 'backend/tests/audio_extended{0}.mp3'.format(i)
+        # Create an Audio instance
+        audioFile = Audio(path)
+        print("Input file duration: ", audioFile.getDuration())
+        
+        # Create the processing service instance
+        processor = AudioProcessingService(audioFile)
+        
+        # Process the audio (cutting it as specified)
+        cutStamps = processor.getTimestamps()
+        print(cutStamps)
+        processor.processAudio(cutStamps)
+        print("Processed file duration: ", processor.audio.duration_seconds)
+
+        # Save the processed audio using the processor's method
+        processor.saveFile("backend/tests/test_processed{0}.mp3".format(i))
+        outputFile = Audio("backend/tests/test_processed{0}.mp3".format(i))
+        time2 = time.time()
+        totalTime += time2 - time1
+        processor = AudioProcessingService(outputFile)
+        cutStamps = processor.getTimestamps()
+        if len(cutStamps) > 0:
+            output.append(cutStamps)
+    print("Time for processing: ", totalTime)
+    print(output)
+    assert len(output) == 0
     
-    # Create the processing service instance
-    processor = AudioProcessingService(audioFile)
-    
-    # Process the audio (cutting it as specified)
-    cutStamps = processor.getTimestamps()
-    processor.processAudio(cutStamps)
-    print("Processed file duration: ", processor.audio.duration_seconds)
-
-    # Save the processed audio using the processor's method
-    processor.saveFile('backend/tests/test_processed1.mp3')
-    outputFile = Audio('backend/tests/test_processed1.mp3')
-    processor = AudioProcessingService(outputFile)
-    cutStamps = processor.getTimestamps()
-    assert len(cutStamps) == 0
-
-
 def test_silence_removal():
     """
     Test for silence removal by looking at duration of clip.
