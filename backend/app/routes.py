@@ -201,6 +201,19 @@ def get_timestamps(user_id):
         worker = WorkerProcess(user_id, audio_entry.file_path)
         word_timestamps = worker.get_word_timestamps()
 
-        return json_response({"word_timestamps": word_timestamps}, 200)
+        # formatted_data = [
+        #     {
+        #         "word": item[0],
+        #         "start_time": item[1][0],  # First element of the timestamp tuple
+        #         "end_time": item[1][1],    # Second element of the timestamp tuple
+        #         "is_removed": item[2]
+        #     }
+        #     for item in word_timestamps
+        # ]
+
+        # print(jsonify({"word_timestamps": formatted_data}))
+
+        # return jsonify({"word_timestamps": formatted_data}), 200
+        return json_response({"word_timestamps": word_timestamps},200)
     
     return json_response(None, 404)
