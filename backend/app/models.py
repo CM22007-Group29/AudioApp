@@ -71,7 +71,11 @@ class User(BaseModel):
     
     def get_preferences(self):
         return UserPreferences.query.filter_by(user_id=self.id).first()
-    
+
+    def delete_preferences(self):
+        preference_id = UserPreferences.query.filter_by(user_id=self.id).first().id
+        return UserPreferences.delete(preference_id)
+
     def upload_audio(self, data):
         data['user_id'] = self.id
         data['status'] = 'uploaded'
