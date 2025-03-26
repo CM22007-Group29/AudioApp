@@ -8,24 +8,10 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = async (event: React.FormEvent) => {
+  const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    const formData = new FormData();
-    formData.append("username", username);
-    try {
-      const response = await fetch(`http://127.0.0.1:4040/auth/login`, {
-        method: "POST",
-        body: formData
-      });
-      if (response.ok) {
-        login(username);
-        navigate("/");
-      } else {
-        console.error("Upload failed");
-      }
-    } catch (err) {
-      console.error(err);
-    }
+    login(username);
+    navigate("/");
   };
 
   return (
