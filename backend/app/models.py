@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 
 db = SQLAlchemy()
 
@@ -14,11 +15,15 @@ class BaseModel(db.Model):
     @classmethod
     def get_all(cls):
         return cls.query.all()
+    
+    @classmethod
+    def get_id(cls):
+        return cls.id
 
     @classmethod
     def get_by_id(cls, instance_id):
         return cls.query.get(instance_id)
-
+    
     @classmethod
     def create(cls, data):
         new_instance = cls(**data)
@@ -56,11 +61,12 @@ class BaseModel(db.Model):
         return instance_id
 
 
-class User(BaseModel):
+class User(UserMixin, BaseModel):
     __tablename__ = 'users'
 
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    password = db.Column(db.String(100))
 
     def json(self):
         return {'id': self.id,'username': self.username, 'email': self.email}
@@ -72,6 +78,9 @@ class User(BaseModel):
     def get_preferences(self):
         return UserPreferences.query.filter_by(user_id=self.id).first()
 
+    def get_by_username(self, username):
+        return User.query.filter_by(username=username).first()
+    
     def delete_preferences(self):
         preference_id = UserPreferences.query.filter_by(user_id=self.id).first().id
         return UserPreferences.delete(preference_id)
@@ -88,6 +97,7 @@ class User(BaseModel):
     
     def get_audio(self, status="uploaded"):
         return Audio.query.filter_by(user_id=self.id, status=status).first()
+
     
 
 class UserPreferences(BaseModel):
