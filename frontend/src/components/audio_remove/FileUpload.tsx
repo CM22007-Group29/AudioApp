@@ -2,11 +2,11 @@ import { useDropzone } from "react-dropzone";
 import { Stack, Box } from "@mui/material";
 import InputFileUpload from "./file_upload/FileUploadButton";
 import LinkUpload from "./link_upload/LinkButton";
-import { useAuth } from "../../context/AuthContext"; // NEW: import useAuth
+import { useAuth } from "../../context/AuthContext";
 
 function FileUpload({ setFileUploaded }: { setFileUploaded: (uploaded: boolean) => void }) {
-    const { user } = useAuth();
-    if (!user) {
+    const { user, login, logout } = useAuth();
+    if (user == null) {
         return (
             <Stack spacing={4} className="flex flex-col items-center justify-center">
             <div className="text-center mx-auto pt-5">

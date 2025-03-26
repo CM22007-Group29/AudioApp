@@ -36,6 +36,16 @@ def create_app():
     with app.app_context():
         db.create_all()
 
+        user = {"email": 'test@gmail.com', "username": 'test', "password": 'test'}
+
+        user_instance = User().get_by_username(username = "test")
+        print(user_instance)
+
+        if user_instance is not None:
+            user_instance.update(user_instance.id, user)
+        else:
+            User.create(user)
+
     @login_manager.user_loader
     def load_user(user_id):
         return User.get_by_id(user_id)

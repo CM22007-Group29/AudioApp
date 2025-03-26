@@ -1,31 +1,18 @@
-import React, { createContext, useContext } from 'react';
+import { createContext, useContext } from "react";
 
-interface User {
-  id: number;
-  username: string;
-}
-
+// Define authentication context
 interface AuthContextType {
-  user: User | null;
+  user: string | null;
+  login: (username: string) => void;
+  logout: () => void;
 }
 
-const AuthContext = createContext<AuthContextType>({ user: null });
+export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function useAuth() {
-  return useContext(AuthContext);
-}
-
-interface AuthProviderProps {
-  children: React.ReactNode;
-  signedOut?: boolean;
-}
-
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children, signedOut = false }) => {
-  const user = signedOut ? null : { id: 1, username: 'mockuser' };
-
-  return (
-    <AuthContext.Provider value={{ user }}>
-      {children}
-    </AuthContext.Provider>
-  );
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
 };
