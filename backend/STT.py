@@ -32,7 +32,7 @@ class SpeachToText():
                     word = word_data.get("word")
                     if start is not None and end is not None and  word is not None and score is not None:
                         if nextFlag:
-                            time_tuples.append((int(time_tuples[-1][1] * 1000) * 0.9 + int(start * 1000) * 0.1 , int(start * 1000) * 0.7 + int(time_tuples[-1][1] * 1000) * 0.3))
+                            time_tuples.append((int(time_tuples[-1][1]) * 0.9 + int(start * 1000) * 0.1 , int(start * 1000) * 0.7 + int(time_tuples[-1][1]) * 0.3))
                             words.append("*...*")
                             scores.append(1)
                             nextFlag = False
