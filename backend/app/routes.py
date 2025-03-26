@@ -1,6 +1,7 @@
-from flask import Blueprint, jsonify, request, current_app, send_from_directory
-from flask import current_app, request, send_from_directory
+from flask import Blueprint, jsonify, request, current_app, send_from_directory, redirect, url_for
+from flask_login import login_user
 from werkzeug.utils import secure_filename
+from werkzeug.security import generate_password_hash, check_password_hash
 from .models import User
 from backend.worker import WorkerProcess
 import os
@@ -8,7 +9,10 @@ import os
 # routes created by api.route are all preceded by /api
 # blueprints need to be initialised in __init__.py
 api = Blueprint("api", __name__)
+auth = Blueprint('auth', __name__)
 
+
+# API ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 def json_response(data, status=200):
     if data is None:
@@ -182,3 +186,47 @@ def process_audio(user_id):
         return send_from_directory(directory=dir_path, path=file_name)
 
     return json_response(None, 404)
+
+
+
+# AUTH ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+@auth.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method=='POST':
+        username = request.form.get('username')
+        # password = request.form.get('password')
+        # remember = True if request.form.get('remember') else False
+
+        user = User().get_by_username(username=username)
+
+        '''if not user or not check_password_hash(user.password, password):
+            flask.flash('Please check your login details and try again.')
+            return redirect(url_for('auth.login'))'''
+        if not user:
+            return json_response(None, 404)
+
+        login_user(user)
+
+        return json_response({'user_id': user.id})
+    
+
+@auth.route('/signup', methods=['POST'])
+def signup():
+    if request.method=='POST':
+        email = request.form.get('email')
+        username = request.form.get('username')
+        password = request.form.get('password')
+
+        user = User.query.filter_by(email=email).first()
+
+        if user:
+            return redirect(url_for('auth.signup'))
+
+        new_user = {"email": email, "username": username, "password": generate_password_hash(password, method='sha256')}
+        User.create(new_user)
+
+        return redirect(url_for('auth.login'))
+
+@auth.route('/logout')
+def logout():
+    return 'Logout'
