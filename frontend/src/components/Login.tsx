@@ -1,11 +1,11 @@
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthProvider";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [username, setUsername] = useState("");
-  const { login } = useAuth();
+  const { user, login, logout } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent) => {
