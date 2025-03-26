@@ -11,7 +11,7 @@ export const uploadAudio = async (user_id: number, file: FormData): Promise<Audi
       return response.data
   }
 
-export const getAudio = async (user_id: number): Promise<Audio> => {
+export const getAudio = async (user_id: number): Promise<File> => {
     const response = await api.get(`/audio/${user_id}`)
     return response.data
 }
@@ -21,7 +21,7 @@ export const processAudio = async (user_id: number): Promise<AudioProcessing> =>
     return response.data
 }
 
-export const getProcessedAudio = async (user_id: number): Promise<AudioProcessing> => {
+export const getProcessedAudio = async (user_id: number): Promise<File> => {
     const response = await api.get(`/audio/${user_id}/process`)
     return response.data
 }
