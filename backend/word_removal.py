@@ -2,7 +2,7 @@ import re
 class WordRemover():
     def __init__(self, score = 0.5, words = []):
         self.words = set(words)
-        self.swears = set(["fuck","shit","bitch","fucking","shitting","um","uh", "ass",])
+        self.swears = set(["fuck","shit","bitch","fucking","shitting","um","uh", "ass","*...*"])
         self.score = score
         self.linInterpolation = 0.5
 
@@ -23,6 +23,24 @@ class WordRemover():
             i += 1
             if re.sub(r'[^a-zA-Z0-9]', '', word.lower()) in self.words.union(self.swears):
                 times_to_remove.append((int(timestamps[i-1][1] * 0.8 + timestamps[i][0] * 0.2), int(timestamps[i][1] * 0.25 + timestamps[i+1][0] * 0.75 )))
-            if "..." in word:
-                times_to_remove.append((int(timestamps[i][1] * 0.8 + timestamps[i+1][0] * 0.2), int(timestamps[i][0] * 0.25 + timestamps[i+1][0] * 0.75)))
         return times_to_remove
+    
+    def removeIndices(self, words, timestamps,audioLength = None):
+        if not audioLength:
+            audioLength = timestamps[-1][-1]
+        output = []
+        if re.sub(r'[^a-zA-Z0-9]', '', words[0].lower()) in self.words.union(self.swears):
+            output.append(True)
+        else:
+            output.append(False)
+        for i, word in enumerate(words[1:-1]):
+            i += 1
+            if re.sub(r'[^a-zA-Z0-9]', '', word.lower()) in self.words.union(self.swears):
+                output.append(True)
+            else:
+                output.append(False)
+        if re.sub(r'[^a-zA-Z0-9]', '', words[-1].lower()) in self.words.union(self.swears):
+            output.append(True)
+        else:
+            output.append(False)
+        return output

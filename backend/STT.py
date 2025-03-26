@@ -23,6 +23,7 @@ class SpeachToText():
         scores = []
 
         for segment in output:
+            nextFlag = False
             if "words" in segment:
                 for word_data in segment["words"]:
                     start = word_data.get("start")
@@ -30,8 +31,16 @@ class SpeachToText():
                     score = word_data.get("score") 
                     word = word_data.get("word")
                     if start is not None and end is not None and  word is not None and score is not None:
+                        if nextFlag:
+                            time_tuples.append((int(time_tuples[-1][1] * 1000) * 0.9 + int(start * 1000) * 0.1 , int(start * 1000) * 0.7 + int(time_tuples[-1][1] * 1000) * 0.3))
+                            words.append("*...*")
+                            scores.append(1)
+                            nextFlag = False
                         time_tuples.append((int(start * 1000) , int(end * 1000)))
                         words.append(word)
                         scores.append(score)
+                        if "..." in word:
+                            nextFlag = True
+
 
         return time_tuples, words, scores

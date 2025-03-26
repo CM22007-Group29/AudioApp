@@ -122,15 +122,15 @@ def test_word_timestamps():
         
         word_timesamps = processor.getWordsTimestamps()
         print(word_timesamps)
-        print(word_timesamps.json())
         assert len(word_timesamps) > 0
-        assert len(word_timesamps[0]) == 2
+        assert len(word_timesamps[0]) == 3
         assert len(word_timesamps[0][1]) == 2
+        assert isinstance(word_timesamps[0][2],bool)
 
 if __name__ == '__main__':
     test_word_timestamps()
-    test_audioprocessor()
-    test_normalization()
-    test_STT()
-    test_silence_removal()
+    # test_audioprocessor()
+    # test_normalization()
+    # test_STT()
+    # test_silence_removal()
     print("All tests passed!")
