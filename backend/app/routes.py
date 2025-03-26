@@ -2,7 +2,8 @@ from flask import Blueprint, jsonify, request, current_app, send_from_directory,
 from flask_login import login_user, logout_user, login_required
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
-from .models import User
+
+from .models import User, UserPreferences, Audio
 from backend.worker import WorkerProcess
 import os
 
@@ -70,7 +71,7 @@ def user_detail(user_id):
             json_response(None, 404)
 
 
-@api.route("/users/<int:user_id>/preferences", methods=["GET", "POST"])
+@api.route("/users/<int:user_id>/preferences", methods=["GET", "POST", "DELETE"])
 def user_preferences(user_id):
     """
         Access user preferences with /api/users/{user_id}/preferences
@@ -96,6 +97,14 @@ def user_preferences(user_id):
 
         new_prefs = user.create_preferences(request.json)
         return json_response(new_prefs.json(), 201)
+
+    elif request.method == "DELETE":
+        user = User.get_by_id(user_id)
+        deleted_id = user.delete_preferences()
+        if deleted_id:
+            return jsonify({"message": f"UserPreference {deleted_id} deleted"})  
+        else:
+            json_response(None, 404)
 
 
 
@@ -130,9 +139,10 @@ def audio(user_id):
             return json_response(None, 404)
 
         user.upload_audio({"file_path": file_path})
+        data = {"id": user.get_audio().id, "user_id": user.id, "file_path": file_path}
+
         return json_response({"message"  : "Audio uploaded",
-                              "file_path":  file_path,
-                              "audio_id" : user.get_audio().id}, 201)
+                              "data":  data}, 201)
 
     elif request.method == "GET":
         user = User.get_by_id(user_id)
@@ -172,6 +182,7 @@ def process_audio(user_id):
         # upload to db
         user.upload_processed_audio({"file_path": output_path})
         return json_response({"output_path": output_path, "timestamps": timestamps}, 201)
+    
     elif request.method == "GET":
         user = User.get_by_id(user_id)
         if not user:
