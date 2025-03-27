@@ -24,7 +24,7 @@ def create_app():
     db.init_app(app)
 
     # allows us to communicate with frontend
-    CORS(app)
+    CORS(app, origins=["http://192.168.0.24:5173"])
 
     # initialises login manager
     login_manager.login_view = 'auth.login'

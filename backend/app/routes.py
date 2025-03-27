@@ -216,10 +216,10 @@ def login():
             return redirect(url_for('auth.login'))'''
         if not user:
             return json_response(None, 404)
-
         login_user(user)
-
         return json_response({'user_id': user.id})
+    else:
+        return json_response({"message":'Please log in'}, 200)
     
 
 @auth.route('/signup', methods=['POST'])
@@ -249,6 +249,6 @@ def logout(user_id):
         user = User.get_by_id(user_id)
         if user:
             logout_user(user)
-            return json_response(None, 200)
+            return jsonify({"message": f"User {user_id} logged out"}), 200
         
         return json_response(None, 404)
