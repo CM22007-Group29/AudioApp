@@ -1,6 +1,7 @@
 import re
 class WordRemover():
     def __init__(self, score = 0.5, words = []):
+    def __init__(self, score = 0.5, words = []):
         self.words = set(words)
         self.swears = set(["fuck","shit","bitch","fucking","shitting","um","uh", "ass","*...*"])
         self.score = score
@@ -14,7 +15,16 @@ class WordRemover():
     def remove(self, words, timestamps,audioLength = None):
         if not audioLength:
             audioLength = timestamps[-1][-1]
+    def remove(self, words, timestamps,audioLength = None):
+        if not audioLength:
+            audioLength = timestamps[-1][-1]
         times_to_remove = []
+        if re.sub(r'[^a-zA-Z0-9]', '', words[0].lower()) in self.words.union(self.swears):
+            times_to_remove.append((0,timestamps[1][0]))
+        if re.sub(r'[^a-zA-Z0-9]', '', words[-1].lower()) in self.words.union(self.swears):
+            times_to_remove.append((timestamps[-2][1],audioLength))
+        for i, word in enumerate(words[1:-1]):
+            i += 1
         if re.sub(r'[^a-zA-Z0-9]', '', words[0].lower()) in self.words.union(self.swears):
             times_to_remove.append((0,timestamps[1][0]))
         if re.sub(r'[^a-zA-Z0-9]', '', words[-1].lower()) in self.words.union(self.swears):
