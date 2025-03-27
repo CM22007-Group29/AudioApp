@@ -1,7 +1,6 @@
 import re
 class WordRemover():
     def __init__(self, score = 0.5, words = []):
-    def __init__(self, score = 0.5, words = []):
         self.words = set(words)
         self.swears = set(["fuck","shit","bitch","fucking","shitting","um","uh", "ass","*...*"])
         self.score = score
