@@ -36,9 +36,9 @@ class AudioProcessingService:
         self.audio = new_audio
         return self.audio
     
-    def getCutstamps(self):
+    def getCutstamps(self, test=False):
         timestamps, words, score = self.whisper.transcribe(self.audio_file.getFilePath())
-        cutStamps = self.word_remover.remove(words, timestamps)
+        cutStamps = self.word_remover.remove(words, timestamps,test=test)
         return cutStamps
 
     def getWordsTimestamps(self):

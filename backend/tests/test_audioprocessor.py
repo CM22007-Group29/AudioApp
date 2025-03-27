@@ -78,7 +78,7 @@ def test_STT():
         time2 = time.time()
         totalTime += time2 - time1
         processor = AudioProcessingService(outputFile)
-        cutStamps = processor.getTimestamps()
+        cutStamps = processor.getCutstamps(test=True)
         if len(cutStamps) > 0:
             output.append(cutStamps)
     print("Time for processing: ", totalTime)
