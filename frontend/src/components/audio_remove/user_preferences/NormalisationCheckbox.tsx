@@ -26,7 +26,7 @@ export default function NormalisationCheckbox({
       sx={{
         color: "gray",
         '&.Mui-checked': {
-          color: "black",
+          color: "white",
         },
       }}
     />

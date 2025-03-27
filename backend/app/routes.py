@@ -71,7 +71,7 @@ def user_detail(user_id):
             json_response(None, 404)
 
 
-@api.route("/users/<int:user_id>/preferences", methods=["GET", "POST", "DELETE"])
+@api.route("/users/<int:user_id>/preferences", methods=["GET", "POST", "DELETE", "PUT"])
 def user_preferences(user_id):
     """
         Access user preferences with /api/users/{user_id}/preferences
@@ -105,6 +105,14 @@ def user_preferences(user_id):
             return jsonify({"message": f"UserPreference {deleted_id} deleted"})  
         else:
             json_response(None, 404)
+    
+    elif request.method == "PUT":
+        user = User.get_by_id(user_id)
+        if not user:
+            return json_response(None, 404)
+
+        updated_prefs = user.update_preferences(request.json)
+        return json_response(updated_prefs.json(), 200)
 
 
 

@@ -22,7 +22,7 @@ export default function SilenceLengthSlider({
       value={silence_length}
       onChange={handleChange}
       valueLabelDisplay="auto"
-      sx={{ color: 'black' }}
+      sx={{ color: 'white' }}
     />
   );
 }

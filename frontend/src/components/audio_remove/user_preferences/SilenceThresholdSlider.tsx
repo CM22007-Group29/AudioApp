@@ -19,7 +19,7 @@ export default function SilenceThresholdSlider({ silence_threshold, setSilenceTh
           value={silence_threshold}
           onChange={handleChange} 
           valueLabelDisplay="auto"
-          sx={{ color: 'black' }}
+          sx={{ color: 'white' }}
         />
   );
 }
