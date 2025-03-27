@@ -17,7 +17,7 @@ export type AudioState = {
     setTime: (time: number) => void;
     ampData: number[];
     wordData: Word[];
-    setAudioContext: React.Dispatch<React.SetStateAction<AudioState>> | null;
+    setAudioContext: React.Dispatch<React.SetStateAction<AudioState>>;
 }
 
 const AudioContext = createContext<AudioState | null>(null);
@@ -41,59 +41,47 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
     },
     ampData: getAmplitudeData(),
     wordData: [
-      {
-        word: "Hello",
-        startTime: 0,
-        endTime: 100,
-        enabled: true
-      },
-      {
-        word: "my",
-        startTime: 150,
-        endTime: 270,
-        enabled: true
-      },
-      {
-        word: "name",
-        startTime: 270,
-        endTime: 350,
-        enabled: true
-      },
-      {
-        word: "is",
-        startTime: 400,
-        endTime: 500,
-        enabled: true
-      }
+      { word: "Hello", startTime: 0, endTime: 100, enabled: true },
+      { word: "my", startTime: 150, endTime: 270, enabled: true },
+      { word: "name", startTime: 270, endTime: 350, enabled: true },
+      { word: "is", startTime: 400, endTime: 500, enabled: true }
     ],
-    setAudioContext: null
+    setAudioContext: () => {}
   });
 
+  // Set setAudioContext function in the state (so it's available in context)
   useEffect(() => {
-    if (audioContext.audioRef.current && !audioContext.endTime) {
-      setAudioContext({
-        ...audioContext,
-        endTime: audioContext.audioRef.current.duration,
-      });
-    }
+    setAudioContext(prev => ({ ...prev, setAudioContext }));
+  }, [setAudioContext]);
 
+  // Set endTime once on mount when audio is loaded
+  useEffect(() => {
+    if (audio.current && !audioContext.endTime) {
+      setAudioContext(prev => ({
+        ...prev,
+        endTime: audio.current?.duration || null,
+      }));
+    }
+  }, []); // run once on mount
+
+  // Update currentTime at interval without causing an infinite loop
+  useEffect(() => {
     const interval = setInterval(() => {
-      if (audio.current?.currentTime) {
-        setAudioContext({
-          ...audioContext,
-          currentTime: audio.current?.currentTime
-        });
+      if (audio.current) {
+        setAudioContext(prev => ({
+          ...prev,
+          currentTime: audio.current!.currentTime
+        }));
       }
     }, 100);
 
-      //Clearing the interval
-      return () => clearInterval(interval);
-  }, [audioContext]);
+    return () => clearInterval(interval);
+  }, []); // run once on mount
 
   return (
     <AudioContext.Provider value={{ ...audioContext, setAudioContext }}>
       <audio ref={audio}>
-        <source src={ audioContext.source } type="audio/mpeg" />  
+        <source src={audioContext.source} type="audio/mpeg" />  
       </audio>
       {children}
     </AudioContext.Provider>

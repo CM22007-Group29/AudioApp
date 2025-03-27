@@ -109,9 +109,16 @@ def test_audio():
         response = client.get(f'/api/audio/{user.id}')
         assert (response.status_code == 200 or response.status_code == 304), f"Failed to get audio file: {response.data}"
         print("audio file downloaded")
+
+        assert response.headers.get("Content-Type") == "audio/mpeg", "Incorrect Content-Type"
+        print("audio content type matched")
+
         # Now check the raw binary content rather than expecting JSON
         assert response.data.startswith(b"\x00\xFF"), "Audio content mismatch"
         print("audio content matched")
+
+
+
     
     print("audio test succeeded")
 

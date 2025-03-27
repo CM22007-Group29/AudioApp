@@ -3,7 +3,7 @@ import { Audio } from "../types/Audio"
 import { AudioProcessing } from "../types/AudioProcessing"
 
 export const uploadAudio = async (user_id: number, file: FormData): Promise<Audio> => {
-    const response = await api.post(`/audio/${user_id}`, file, {
+    const response = await api.post(`http://127.0.0.1:4040/audio/${user_id}`, file, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -11,18 +11,21 @@ export const uploadAudio = async (user_id: number, file: FormData): Promise<Audi
       return response.data
   }
 
-export const getAudio = async (user_id: number): Promise<File> => {
-    const response = await api.get(`/audio/${user_id}`)
-    console.log(response)
-    return response.data
+  export const getAudio = async (user_id: number): Promise<Blob> => {
+    const response = await fetch(`http://127.0.0.1:4040/api/audio/${user_id}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch audio");
+    }
+    return response.blob();
 }
 
 export const processAudio = async (user_id: number): Promise<AudioProcessing> => {
-    const response = await api.get(`/audio/${user_id}/process`)
+    const response = await api.get(`http://127.0.0.1:4040/audio/${user_id}/process`)
     return response.data
 }
 
 export const getProcessedAudio = async (user_id: number): Promise<File> => {
-    const response = await api.get(`/audio/${user_id}/process`)
+    const response = await api.get(`http://127.0.0.1:4040/audio/${user_id}/process`)
     return response.data
 }
+

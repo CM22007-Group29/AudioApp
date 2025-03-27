@@ -40,16 +40,21 @@ export default function InputFileUpload({ setFileUploaded }: { setFileUploaded: 
       if (response.ok) {
         setFileUploaded(true);
         getAudio(user.id)
-          .then((responce) => {
-console.log("File received:", responce);
-console.log("Is it a File?",  responce instanceof File);
-console.log("Is it a Blob?",  responce instanceof Blob);
-            const url = URL.createObjectURL(responce);
+          .then((audioBlob) => {
+            console.log("Audio Blob received:", audioBlob);
+            console.log("Is it a Blob?", audioBlob instanceof Blob);
+            const url = URL.createObjectURL(audioBlob);
             audioContext.setAudioContext({
               ...audioContext,
               source: url
-            })
+            });
+            // Create a temporary HTMLAudioElement and play it:
+            const audioPlayer = new Audio(url);
+            audioPlayer.play().catch((err) => console.error("Playback error:", err));
           })
+          .catch((error) => {
+            console.error("Error retrieving audio:", error);
+          });
       } else {
         console.error("Upload failed");
       }
@@ -76,3 +81,5 @@ console.log("Is it a Blob?",  responce instanceof Blob);
     </Button>
   );
 }
+
+
