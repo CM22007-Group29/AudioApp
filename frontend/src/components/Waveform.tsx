@@ -154,7 +154,8 @@ export const Waveform = () => {
                 <Typography 
                   sx={{
                     textTransform: "none",
-                    textDecoration: word.enabled ? "" : "line-through" 
+                    textDecoration: word.enabled ? "" : "line-through", 
+                    color: "black"
                   }
                 }>
                   {word.word}

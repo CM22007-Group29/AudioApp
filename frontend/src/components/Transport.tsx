@@ -16,10 +16,10 @@ export const Transport = () => {
 
   return (
     <Stack spacing={2} direction="row">
-      <Button onClick={play} variant="contained">
+      <Button onClick={play} variant="contained" sx={{ color: 'white', backgroundColor: 'black' }}>
         <PlayArrowIcon />
       </Button>
-      <Button onClick={pause} variant="contained">
+      <Button onClick={pause} variant="contained" sx={{ color: 'white', backgroundColor: 'black' }}>
         <PauseIcon />
       </Button>
       <Chip label={audio?.currentTime.toFixed(2) + "s"} />
