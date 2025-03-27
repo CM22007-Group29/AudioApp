@@ -22,6 +22,10 @@ export default function InputFileUpload({ setFileUploaded }: { setFileUploaded: 
   const userId = user?.id;
   const audioContext = useAudioContext();
 
+  if (!userId) {
+    throw new Error("User ID not found");
+  }
+
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files || event.target.files.length === 0) {
       return;
@@ -44,6 +48,9 @@ export default function InputFileUpload({ setFileUploaded }: { setFileUploaded: 
             console.log("Audio Blob received:", audioBlob);
             console.log("Is it a Blob?", audioBlob instanceof Blob);
             const url = URL.createObjectURL(audioBlob);
+            if (!audioContext) {
+              throw new Error("Audio context not found");
+            }
             audioContext.setAudioContext({
               ...audioContext,
               source: url
