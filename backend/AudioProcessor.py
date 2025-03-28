@@ -36,16 +36,10 @@ class AudioProcessingService:
         self.audio = new_audio
         return self.audio
     
-    def getCutstamps(self, test=False):
-        timestamps, words, score = self.whisper.transcribe(self.audio_file.getFilePath())
-        cutStamps = self.word_remover.remove(words, timestamps,test=test)
+    def getTimestamps(self):
+        words, timestamps = self.whisper.transcribe(self.audio_file.getFilePath())
+        cutStamps = self.word_remover.remove(words, timestamps)
         return cutStamps
-
-    def getWordsTimestamps(self):
-        timestamps, words, score = self.whisper.transcribe(self.audio_file.getFilePath())
-        is_removed = self.word_remover.removeIndices(words, timestamps)
-        output = list(zip(words,timestamps, is_removed))
-        return output
 
     def normalizeAudio(self):
         """

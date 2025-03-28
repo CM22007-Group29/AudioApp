@@ -260,39 +260,3 @@ def logout(user_id):
             return jsonify({"message": f"User {user_id} logged out"}), 200
         
         return json_response(None, 404)
-
-    return json_response(None, 404)
-
-@api.route("/audio/<int:user_id>/timestamps", methods=["POST", "GET"])
-def get_timestamps(user_id):
-    """
-        Get word and timestamps with /audio/<int:user_id>/timestamps
-        GET /audio/<int:user_id>/timestamps gets words and timestamps
-    """
-    if request.method == "GET":
-        user = User.get_by_id(user_id)
-        if not user:
-            return json_response(None, 404)
-
-        audio_entry = user.get_audio()
-        if not audio_entry or not os.path.exists(audio_entry.file_path):
-            return json_response(None, 404)
-
-        worker = WorkerProcess(user_id, audio_entry.file_path)
-        word_timestamps = worker.get_word_timestamps()
-
-        formatted_data = [
-            {
-                "word": item[0],
-                "start_time": item[1][0],  # First element of the timestamp tuple
-                "end_time": item[1][1],    # Second element of the timestamp tuple
-                "is_removed": item[2]
-            }
-            for item in word_timestamps
-        ]
-
-        print(jsonify({"word_timestamps": formatted_data}))
-
-        return jsonify({"word_timestamps": formatted_data}), 200
-    
-    return json_response(None, 404)

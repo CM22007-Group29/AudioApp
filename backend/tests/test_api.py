@@ -171,44 +171,6 @@ def test_audio_process():
         assert download_resp.status_code == 200, f"Failed to download processed audio: {download_resp.data}"
         print("Audio processing GET test succeeded")
 
-@give_app_context
-def test_get_word():
-    # Clean up any existing users and audio
-    for user in User.get_all():
-        User.delete(user.id)
-    for audio_entry in Audio.get_all():
-        Audio.delete(audio_entry.id)
-    for prefs in UserPreferences.get_all():
-        UserPreferences.delete(prefs.id)
-
-    # Create a user to associate with uploaded audio
-    user = User.create({'username': 'test_process', 'email': 'process@audio.com'})
-    # Create preferences for the user
-    UserPreferences.create({'user_id': user.id, 'normalise': True, 'extra_words':"balls dick"})   
-
-    audio_path = os.path.join('backend/tests/audio_extended3.mp3')
-    with open(audio_path, 'rb') as f:
-        audio_content = f.read()
-
-    data = {
-        'audio': (BytesIO(audio_content), "audio_extended3.mp3")
-    }
-
-    with app.test_client() as client:
-        #POST
-        # 1. Upload audio
-        upload_resp = client.post(
-            f'/api/audio/{user.id}',
-            data=data,
-            content_type='multipart/form-data'
-        )
-        assert upload_resp.status_code == 201, f"Audio upload failed: {upload_resp.data}"
-
-        
-        download_resp = client.get(f'/api/audio/{user.id}/timestamps')
-        print(download_resp.data)
-        print("Timestamp GET test succeeded")
-
 
 if __name__ == '__main__':
     test_users()
@@ -216,4 +178,3 @@ if __name__ == '__main__':
     test_user_preferences()
     test_audio() 
     test_audio_process()
-    test_get_word()
