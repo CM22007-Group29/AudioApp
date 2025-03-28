@@ -284,9 +284,9 @@ def get_timestamps(user_id):
         formatted_data = [
             {
                 "word": item[0],
-                "start_time": item[1][0],  # First element of the timestamp tuple
-                "end_time": item[1][1],    # Second element of the timestamp tuple
-                "is_removed": item[2]
+                "startTime": item[1][0],  # First element of the timestamp tuple
+                "endTime": item[1][1],    # Second element of the timestamp tuple
+                "isRemoved": item[2]
             }
             for item in word_timestamps
         ]

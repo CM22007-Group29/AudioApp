@@ -107,7 +107,7 @@ export const Waveform = () => {
     audio.setAudioContext?.((prevAudio: AudioState) => ({
       ...prevAudio,
       wordData: prevAudio.wordData.map((word, i) =>
-        i === wordIndex ? { ...word, enabled: !word.enabled } : word
+        i === wordIndex ? { ...word, enabled: !word.isRemoved } : word
       ),
     }));
   }, [audio]);
@@ -129,20 +129,20 @@ export const Waveform = () => {
             key={i}
             className="word-container"
             style={{
-              left: word.startTime + 
+              left: timeToPixels(word.startTime) + 
                     (canvas.current?.getBoundingClientRect().left ?? 0),
-              width: word.endTime - word.startTime
+              width: timeToPixels(word.endTime) - timeToPixels(word.startTime)
             }}
           >
             <div 
               className={
                 `word-box
-                ${word.enabled ? "word-box-enabled" : "word-box-disabled"}
+                ${word.isRemoved ? "word-box-enabled" : "word-box-disabled"}
               `}
             >
               <IconButton onClick={toggleWord(i)}>
                 {
-                  word.enabled ? 
+                  word.isRemoved ? 
                     <VolumeOff fontSize="small"/>
                   :
                     <VolumeUp fontSize="small"/>
@@ -154,7 +154,7 @@ export const Waveform = () => {
                 <Typography 
                   sx={{
                     textTransform: "none",
-                    textDecoration: word.enabled ? "" : "line-through", 
+                    textDecoration: word.isRemoved ? "" : "line-through", 
                     color: "black"
                   }
                 }>
