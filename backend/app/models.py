@@ -75,6 +75,19 @@ class User(UserMixin, BaseModel):
         data['user_id'] = self.id
         return UserPreferences.create(data)
     
+    def update_preferences(self, data):
+        preference = UserPreferences.query.filter_by(user_id=self.id).first()
+        if not preference:
+            return None
+        
+        for key, value in data.items():
+            if hasattr(preference, key):
+                setattr(preference, key, value)
+
+        db.session.commit()
+
+        return preference
+    
     def get_preferences(self):
         return UserPreferences.query.filter_by(user_id=self.id).first()
 
