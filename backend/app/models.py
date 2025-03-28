@@ -109,7 +109,8 @@ class User(UserMixin, BaseModel):
         return Audio.create(data)
     
     def get_audio(self, status="uploaded"):
-        return Audio.query.filter_by(user_id=self.id, status=status).first()
+        return Audio.query.filter_by(user_id=self.id, status=status).order_by(Audio.id.desc()).first()
+        # return Audio.query.filter_by(user_id=self.id, status=status).first()
 
     
 

@@ -174,26 +174,31 @@ function EditPage() {
             label="Enter extra words to remove (space separated)"
             value={extraWords}
             onChange={(e) => setExtraWords(e.target.value)}
-            sx={{ width: 500, input: { color: "white" }, "& .MuiInputLabel-root": { color: "white" } }}
+            sx={{
+              minWidth: "60px",
+              width: "100%",
+              input: { color: "white" },
+              "& .MuiInputLabel-root": { color: "white" },
+            }}
           />
         </Grid>
-        <Grid size={4}>
-          {/* Alignment cell */}
+        <Grid
+          size={2.8}
+          sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center" }}
+        >
+          <Button
+            variant="contained"
+            onClick={handleSubmitPreferences}
+            sx={{
+              backgroundColor: "white",
+              color: "black",
+              "&:hover": { backgroundColor: "#f0f0f0" },
+            }}
+          >
+            Save Preferences
+          </Button>
         </Grid>
       </Grid>
-
-      <Button
-        variant="contained"
-        onClick={handleSubmitPreferences}
-        sx={{
-          mt: 2,
-          backgroundColor: "white",
-          color: "black",
-          "&:hover": { backgroundColor: "#f0f0f0" },
-        }}
-      >
-        Save Preferences
-      </Button>
     </Box>
   );
 }
