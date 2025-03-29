@@ -1,6 +1,7 @@
 import { createContext, useRef, useContext, useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { getAudio, getTimestamps } from "../services/audioService";
+import api from "../services/api";
 
 export type Word = {
   word: string;
@@ -23,7 +24,7 @@ export type AudioState = {
 const AudioContext = createContext<AudioState | null>(null);
 
 const getAmplitudeData = () => {
-  return Array.from({length: 100}, () => Math.floor(Math.random() * 100));
+  return Array.from({length: 10000}, () => Math.floor(Math.random() * 100));
 }
 
 export const AudioContextProvider = ({ children }: { children: React.ReactNode }) => {
@@ -32,7 +33,7 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
   const [audioContext, setAudioContext] = useState<AudioState>({
     source: "todo/path.mp3",
     audioRef: audio,
-    endTime: 3000,
+    endTime: null,
     currentTime: 0,
     setTime: (time) => {
       if (audio.current) {
@@ -40,27 +41,25 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
       }
     },
     ampData: getAmplitudeData(),
-    wordData: [
-      { word: "Hello", startTime: 0, endTime: 100, isRemoved: true },
-      { word: "my", startTime: 150, endTime: 270, isRemoved: true },
-      { word: "name", startTime: 270, endTime: 350, isRemoved: true },
-      { word: "is", startTime: 400, endTime: 500, isRemoved: true }
-    ],
+    wordData: [],
     setAudioContext: () => {}
   });
 
   useEffect(() => {
     if (user) {
+      // setAudioContext(prev => ({ ...prev, source: `http://localhost:4040/api/audio/${user.id}/process` }));
       getTimestamps(user.id).then((timestamps) => {
         setAudioContext(prev => ({ ...prev, wordData: timestamps }));
+        console.log(audioContext, timestamps)
       });
+      console.log("DONE!")
     }
   }, [user]);
 
   // Set setAudioContext function in the state (so it's available in context)
   useEffect(() => {
     setAudioContext(prev => ({ ...prev, setAudioContext }));
-  }, [setAudioContext]);
+  }, []);
 
   // Set endTime once on mount when audio is loaded
   useEffect(() => {
@@ -89,7 +88,7 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
   return (
     <AudioContext.Provider value={{ ...audioContext, setAudioContext }}>
       <audio ref={audio}>
-        <source src={audioContext.source} type="audio/mpeg" />  
+        <source src={user ? `http://localhost:4040/api/audio/${user.id}/process` : ""} type="audio/mpeg" />  
       </audio>
       {children}
     </AudioContext.Provider>

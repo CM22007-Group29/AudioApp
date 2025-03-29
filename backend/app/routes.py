@@ -163,7 +163,7 @@ def audio(user_id):
 
         dir_path = os.path.dirname(audio_entry.file_path)
         file_name = os.path.basename(audio_entry.file_path)
-        return send_from_directory(directory=dir_path, path=file_name, mimetype="audio/mpeg", as_attachment=True)
+        return send_from_directory(directory=dir_path, path=file_name, mimetype="audio/mpeg")
 
     return json_response(None, 404)
 
@@ -196,13 +196,15 @@ def process_audio(user_id):
         if not user:
             return json_response(None, 404)
 
-        audio_entry = user.get_audio("processed")
+        audio_entry = user.get_audio()
+
+        # audio_entry = user.get_audio("processed")
         if not audio_entry or not os.path.exists(audio_entry.file_path):
             return json_response(None, 404)
 
         dir_path = os.path.dirname(audio_entry.file_path)
         file_name = os.path.basename(audio_entry.file_path)
-        return send_from_directory(directory=dir_path, path=file_name)
+        return send_from_directory(directory=dir_path, path=file_name, mimetype="audio/mpeg")
 
     return json_response(None, 404)
 
