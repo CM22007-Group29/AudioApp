@@ -1,27 +1,7 @@
-import { createContext, useRef, useContext, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
-import { getAudio, getTimestamps } from "../services/audioService";
-import api from "../services/api";
-
-export type Word = {
-  word: string;
-  startTime: number;
-  endTime: number;
-  isRemoved: boolean;
-}
-
-export type AudioState = {
-    source: string;
-    audioRef: React.RefObject<HTMLAudioElement | null>;
-    endTime: number | null;
-    currentTime: number;
-    setTime: (time: number) => void;
-    ampData: number[];
-    wordData: Word[];
-    setAudioContext: React.Dispatch<React.SetStateAction<AudioState>>;
-}
-
-const AudioContext = createContext<AudioState | null>(null);
+import { getTimestamps } from "../services/audioService";
+import { AudioContext, AudioState } from "./AudioContext";
 
 const getAmplitudeData = () => {
   return Array.from({length: 10000}, () => Math.floor(Math.random() * 100));
@@ -47,10 +27,8 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
 
   useEffect(() => {
     if (user) {
-      // setAudioContext(prev => ({ ...prev, source: `http://localhost:4040/api/audio/${user.id}/process` }));
       getTimestamps(user.id).then((timestamps) => {
         setAudioContext(prev => ({ ...prev, wordData: timestamps }));
-        console.log(audioContext, timestamps)
       });
       console.log("DONE!")
     }
@@ -63,7 +41,7 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
 
   // Set endTime once on mount when audio is loaded
   useEffect(() => {
-    if (audio.current && !audioContext.endTime) {
+    if (audio.current) {
       setAudioContext(prev => ({
         ...prev,
         endTime: audio.current?.duration || null,
@@ -88,11 +66,12 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
   return (
     <AudioContext.Provider value={{ ...audioContext, setAudioContext }}>
       <audio ref={audio}>
-        <source src={user ? `http://localhost:4040/api/audio/${user.id}/process` : ""} type="audio/mpeg" />  
+        <source 
+          src={user ? `http://localhost:4040/api/audio/${user.id}/process` : ""}
+          type="audio/mpeg"
+        />  
       </audio>
       {children}
     </AudioContext.Provider>
   );
 };
-
-export const useAudioContext = () => useContext(AudioContext);

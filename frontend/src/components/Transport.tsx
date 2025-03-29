@@ -1,4 +1,4 @@
-import { useAudioContext } from "./AudioProvider";
+import { useAudioContext } from "./AudioContext";
 import { Button, Chip, Stack } from "@mui/material";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
@@ -16,7 +16,7 @@ export const Transport = () => {
   }
 
   const rewind = () => {
-    audio.setTime(0);
+    audio?.setTime(0);
   }
 
   return (

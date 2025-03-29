@@ -1,9 +1,8 @@
 import { useEffect, useRef, useCallback, useState, useMemo } from "react";
-import { AudioState, useAudioContext } from "./AudioProvider";
+import { AudioState, useAudioContext, Word } from "./AudioContext";
 import { Box, Stack } from "@mui/system";
 import { Button, IconButton, Typography } from "@mui/material";
 import { VolumeUp, VolumeOff } from "@mui/icons-material";
-import { Word } from "./AudioProvider"
 
 import "./Waveform.css"
 
@@ -22,6 +21,7 @@ export const Waveform = () => {
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // Time in ms
   const timeToPixels = useCallback((time: number) => {
     if (!audio || !audio.audioRef.current) {
       return 0;
@@ -32,6 +32,7 @@ export const Waveform = () => {
     return progress;
   }, [audio, fullWaveformWidth]);
 
+  // Time in ms
   const pixelsToTime = useCallback((pixels: number) => {
     if (!audio || !audio.audioRef.current) {
       return 0;
@@ -41,7 +42,7 @@ export const Waveform = () => {
     return progress * (audio?.audioRef.current?.duration);
   }, [audio, fullWaveformWidth]);
 
-  // Draw the waveform
+  // Draw the visible part of the waveform
   useEffect(() => {
     if (!waveformCanvas.current || !audio) {
       return;
@@ -98,6 +99,7 @@ export const Waveform = () => {
 
       cursorCanvas.current.width =
         cursorCanvas.current.parentElement?.clientWidth ?? 0;
+
       ctx.clearRect(
         0,
         0,
@@ -129,7 +131,13 @@ export const Waveform = () => {
         timeToPixels(currentTimeMS) - container.scrollLeft
       );
 
-      const currentWord = audio.wordData.find(word => (word.startTime <= currentTimeMS + 50 && currentTimeMS < word.endTime));
+      // Skip over the word if it is deselected
+      // Have to skip early since this code isn't called frequently enough
+      // TODO: Fix this somehow!
+      const currentWord = audio.wordData.find(
+        word => (word.startTime <= currentTimeMS + 50 &&
+        currentTimeMS < word.endTime)
+      );
       if (currentWord && currentWord.isRemoved) {
         console.log(currentWord)
         audio.setTime(currentWord.endTime / 1000)
@@ -145,8 +153,9 @@ export const Waveform = () => {
 
     animationFrameId = requestAnimationFrame(render);
     return () => cancelAnimationFrame(animationFrameId);
-  }, [audio, timeToPixels, scrollX]);
+  }, [audio, timeToPixels, scrollX, fullWaveformWidth]);
 
+  // Move the cursor to the place the user clicked on the waveform
   const handleCursorClick = useCallback((event : MouseEvent) => {
     if (!waveformCanvas.current || !audio || !audio.audioRef.current) {
       return;
@@ -172,6 +181,7 @@ export const Waveform = () => {
     audio.setTime(word.startTime / 1000);
   }, [audio]);
 
+  // Move cursor to a word and scroll to the middle of the screen
   const moveToWordAndScroll = useCallback((word: Word) => () => {
     if (!audio || !scrollContainerRef.current) {
       return;
@@ -200,6 +210,8 @@ export const Waveform = () => {
         i === wordIndex ? { ...word, isRemoved: !word.isRemoved } : word
       ),
     }));
+
+    // TODO: Send this to backend!
   }, [audio]);
 
   return( audio &&
@@ -301,22 +313,22 @@ export const Waveform = () => {
         gap={0}
       >
         {audio?.wordData.map((word, i) =>
-            <div style={{ textAlign: "center" }}>
-              <Button
-                onClick={moveToWordAndScroll(word)}
-                style={{ pointerEvents: "all", margin: 0 }}
-              >
-                <Typography 
-                  sx={{
-                    textTransform: "none",
-                    textDecoration: !word.isRemoved ? "" : "line-through", 
-                    color: "black"
-                  }
-                }>
-                  {word.word}
-                </Typography>
-              </Button>
-            </div>
+          <div key={i} style={{ textAlign: "center" }}>
+            <Button
+              onClick={moveToWordAndScroll(word)}
+              style={{ pointerEvents: "all", margin: 0 }}
+            >
+              <Typography 
+                sx={{
+                  textTransform: "none",
+                  textDecoration: !word.isRemoved ? "" : "line-through", 
+                  color: "black"
+                }
+              }>
+                {word.word}
+              </Typography>
+            </Button>
+          </div>
         )}
       </Box>
     </Stack>
