@@ -5,7 +5,37 @@ import LinkUpload from "./link_upload/LinkButton";
 import { useAuth } from "../../context/AuthContext";
 
 function FileUpload({ setFileUploaded }: { setFileUploaded: (uploaded: boolean) => void }) {
-    const { user, login, logout } = useAuth();
+    const { user } = useAuth();
+
+    const { isDragActive, getRootProps, getInputProps, isDragReject } = useDropzone({
+        accept: { "audio/*": [] },
+        multiple: false,
+        noClick: true,
+        onDrop: async (files) => {
+            if (files.length > 0) {
+                const file = files[0];
+                const formData = new FormData();
+                formData.append("audio", file);
+
+                try {
+                    if (user) {
+                        const response = await fetch(`http://127.0.0.1:4040/api/audio/${user.id}`, {
+                            method: "POST",
+                            body: formData
+                        });
+                        if (response.ok) {
+                            setFileUploaded(true);
+                        } else {
+                            console.error("Drag and drop upload failed");
+                        }
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            }
+        }
+    });
+
     if (user == null) {
         return (
             <Stack spacing={4} className="flex flex-col items-center justify-center">
@@ -26,34 +56,6 @@ function FileUpload({ setFileUploaded }: { setFileUploaded: (uploaded: boolean) 
         </Stack>
         );
     }
-    const userId = user.id;
-
-    const { isDragActive, getRootProps, getInputProps, isDragReject } = useDropzone({
-        accept: { "audio/*": [] },
-        multiple: false,
-        noClick: true,
-        onDrop: async (files) => {
-            if (files.length > 0) {
-                const file = files[0];
-                const formData = new FormData();
-                formData.append("audio", file);
-
-                try {
-                    const response = await fetch(`http://127.0.0.1:4040/api/audio/${userId}`, {
-                        method: "POST",
-                        body: formData
-                    });
-                    if (response.ok) {
-                        setFileUploaded(true);
-                    } else {
-                        console.error("Drag and drop upload failed");
-                    }
-                } catch (err) {
-                    console.error(err);
-                }
-            }
-        }
-    });
 
     return (
         <Stack spacing={4} className="flex flex-col items-center justify-center">

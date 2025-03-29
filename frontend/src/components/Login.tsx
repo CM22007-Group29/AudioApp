@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [username, setUsername] = useState("");
-  const { user, login, logout } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = (event: React.FormEvent) => {

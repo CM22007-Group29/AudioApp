@@ -57,8 +57,8 @@ export default function InputFileUpload({ setFileUploaded }: { setFileUploaded: 
             }));
             
             // Create a temporary HTMLAudioElement and play it:
-            const audioPlayer = new Audio(url);
-            audioPlayer.play().catch((err) => console.error("Playback error:", err));
+            // const audioPlayer = new Audio(url);
+            // audioPlayer.play().catch((err) => console.error("Playback error:", err));
           })
           .catch((error) => {
             console.error("Error retrieving audio:", error);

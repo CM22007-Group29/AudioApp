@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useAudioContext } from "./AudioProvider";
+import { useAudioContext } from "./AudioContext";
 import { Slider, Stack } from "@mui/material";
 
 export const ProgressBar = () => {
