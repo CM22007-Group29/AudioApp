@@ -3,11 +3,13 @@ import Slider from '@mui/material/Slider';
 interface SilenceLengthSliderProps {
   silence_length: number;
   setSilenceLength: (value: number) => void;
+  disabled?: boolean;
 }
 
 export default function SilenceLengthSlider({
   silence_length,
   setSilenceLength,
+  disabled = false,
 }: SilenceLengthSliderProps) {
 
   const handleChange = (_event: Event, newValue: number | number[]) => {
@@ -23,6 +25,7 @@ export default function SilenceLengthSlider({
       onChange={handleChange}
       valueLabelDisplay="auto"
       sx={{ color: 'white' }}
+      disabled={disabled}
     />
   );
 }

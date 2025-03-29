@@ -51,10 +51,11 @@ export default function InputFileUpload({ setFileUploaded }: { setFileUploaded: 
             if (!audioContext) {
               throw new Error("Audio context not found");
             }
-            audioContext.setAudioContext({
-              ...audioContext,
+            audioContext.setAudioContext(prev => ({
+              ...prev,
               source: url
-            });
+            }));
+            
             // Create a temporary HTMLAudioElement and play it:
             const audioPlayer = new Audio(url);
             audioPlayer.play().catch((err) => console.error("Playback error:", err));
