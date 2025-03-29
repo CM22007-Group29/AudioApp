@@ -3,7 +3,7 @@ import Button from '@mui/material/Button';
 import FolderIcon from '@mui/icons-material/Folder';
 import { useAuth } from '../../../context/AuthContext';
 import { getAudio } from '../../../services/audioService';
-import { useAudioContext } from '../../AudioProvider';
+import { useAudioContext } from '../../AudioContext';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
