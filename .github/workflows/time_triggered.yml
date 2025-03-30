@@ -59,14 +59,14 @@ jobs:
 
       - name: Generate SBOM for Each Docker Image
         run: |
+          mkdir sboms
           for service in $(docker compose config --services); do
             image=$(docker images -q $service)
-            echo "$image"
             if [ -z "$image" ]; then
               echo "No image found for $service, skipping SBOM generation."
             else
               echo "Scanning $image"
-              syft $image -o spdx-json > sbom-$service.json
+              syft $image -o spdx-json > sboms/$service.json
             fi
           done
 
