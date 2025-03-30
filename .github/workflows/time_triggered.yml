@@ -48,6 +48,8 @@ jobs:
         with:
           name: frontend
           path: ${{ runner.temp }}
+
+      - name: Load images
         run:
           docker load --input ${{ runner.temp }}/frontend.tar
 
