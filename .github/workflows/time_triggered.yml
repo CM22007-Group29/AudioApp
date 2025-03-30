@@ -88,23 +88,6 @@ jobs:
               echo "No image found for $service, skipping SBOM generation."
             else
               echo "Scanning vulnerabilities in $image"
-              grype sbom:sboms/$service --fail-on critical
-            fi
-          done
-
-      # Check License Compliance using GitHub's Licensee tool
-      - name: Install Licensee
-        run: sudo apt-get install licensee
-
-      - name: Check Licenses in Docker Images
-        run: |
-          for service in $(docker compose config --services); do
-            image=$(docker images -q $service)
-            if [ -z "$image" ]; then
-              echo "No image found for $service, skipping SBOM generation."
-            else
-              echo "Checking licenses in $image"
-              docker run --rm -v $(pwd):/project -w /project licensee detect . --json > license-report-$service.json
-              cat license-report-$service.json
+              grype sbom:sboms/$service.json --fail-on critical
             fi
           done
