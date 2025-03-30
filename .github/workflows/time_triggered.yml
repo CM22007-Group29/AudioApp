@@ -27,12 +27,29 @@ jobs:
         if: always()
         run: docker compose down frontend
 
+      - name: Save Docker Image
+        run: docker save -o ${{ runner.temp }}/frontend.tar frontend:latest
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend
+          path: ${{ runner.temp }}/frontend.tar
+
   security-and-licence:
     runs-on: ubuntu-latest
     needs: [build-frontend]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
+      - name: Download frontend
+        uses: actions/download-artifact@v4
+        with:
+          name: frontend
+          path: ${{ runner.temp }}
+        run:
+          docker load --input ${{ runner.temp }}/frontend.tar
 
       # SBOM generation
       - name: Install Syft
