@@ -41,6 +41,7 @@ jobs:
         run: |
           for service in $(docker compose config --services); do
             image=$(docker images -q $service)
+            echo $image
             if [ -z "$image" ]; then
               echo "No image found for $service, skipping SBOM generation."
             else
