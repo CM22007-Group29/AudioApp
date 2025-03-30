@@ -19,12 +19,13 @@ jobs:
 
       - name: Build and run containers
         run: |
-          docker compose -f docker-compose.yml up -d --build frontend
+          docker compose build frontend
+          docker compose up frontend
           sleep 10  # Wait for services to start
 
       - name: Stop containers
         if: always()
-        run: docker compose -f docker-compose.test.yml down
+        run: docker compose down frontend
 
   security-and-licence:
     runs-on: ubuntu-latest
@@ -41,7 +42,7 @@ jobs:
         run: |
           for service in $(docker compose config --services); do
             image=$(docker images -q $service)
-            echo $image
+            echo "$image"
             if [ -z "$image" ]; then
               echo "No image found for $service, skipping SBOM generation."
             else
