@@ -41,8 +41,12 @@ jobs:
         run: |
           for service in $(docker compose config --services); do
             image=$(docker compose images -q $service)
-            echo "Scanning $image"
-            syft $image -o spdx-json > sbom-$service.json
+            if [ -z "$image" ]; then
+              echo "No image found for $service, skipping SBOM generation."
+            else
+              echo "Scanning $image"
+              syft $image -o spdx-json > sbom-$service.json
+            fi
           done
 
       - name: Upload SBOM Artifact
@@ -57,10 +61,14 @@ jobs:
 
       - name: Scan Each Docker Image for Vulnerabilities
         run: |
-          for service in $(docker-compose config --services); do
-            image=$(docker-compose images -q $service)
-            echo "Scanning vulnerabilities in $image"
-            grype $image --fail-on critical
+          for service in $(docker compose config --services); do
+            image=$(docker compose images -q $service)
+            if [ -z "$image" ]; then
+              echo "No image found for $service, skipping SBOM generation."
+            else
+              echo "Scanning vulnerabilities in $image"
+              grype $image --fail-on critical
+            fi
           done
 
       # Check License Compliance using GitHub's Licensee tool
@@ -69,9 +77,13 @@ jobs:
 
       - name: Check Licenses in Docker Images
         run: |
-          for service in $(docker-compose config --services); do
-            image=$(docker-compose images -q $service)
-            echo "Checking licenses in $image"
-            docker run --rm -v $(pwd):/project -w /project licensee detect . --json > license-report-$service.json
-            cat license-report-$service.json
+          for service in $(docker compose config --services); do
+            image=$(docker compose images -q $service)
+            if [ -z "$image" ]; then
+              echo "No image found for $service, skipping SBOM generation."
+            else
+              echo "Checking licenses in $image"
+              docker run --rm -v $(pwd):/project -w /project licensee detect . --json > license-report-$service.json
+              cat license-report-$service.json
+            fi
           done
