@@ -1,0 +1,136 @@
+name: Time Triggered CI
+
+# TODO: Change
+on:
+  pull_request:
+    types: [opened, synchronize, labeled, unlabeled]
+
+jobs:
+  build-frontend:
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and run containers
+        run: |
+          docker compose -f docker-compose.yml up -d --build frontend
+          sleep 10  # Wait for services to start
+
+      - name: Stop containers
+        if: always()
+        run: docker compose -f docker-compose.test.yml down
+
+  test-backend:
+    runs-on: ubuntu-latest
+    permissions: write-all
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run backend tests
+        run: |
+          docker compose -f docker-compose.test.yml up --build backend
+           
+          TESTS_PASSED=$(grep -oP '<span class="passed">\K[0-9]+' backend/reports/test_report.html)
+          echo "passed=$TESTS_PASSED" >> "$GITHUB_ENV"
+           
+          TESTS_FAILED=$(grep -oP '<span class="failed">\K[0-9]+' backend/reports/test_report.html)
+          echo "failed=$TESTS_FAILED" >> "$GITHUB_ENV"
+
+          ERRORS=$(grep -oP '<span class="error">\K[0-9]+' backend/reports/test_report.html)
+          echo "errors=$ERRORS" >> "$GITHUB_ENV"
+           
+          COVERAGE=$(grep -oP '<span class="pc_cov">\K[0-9]+' backend/htmlcov/index.html)
+          echo "coverage=$COVERAGE" >> "$GITHUB_ENV"
+
+          if [[ "$TESTS_FAILED" -ne 0 ]]; then
+            echo "Some tests failed! Failing workflow."
+            exit 1
+          fi
+          if [[ "$ERRORS" -ne 0 ]]; then
+            echo "An error occurred! Failing workflow."
+            exit 1
+          fi
+
+      - name: Upload Coverage Report as Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: backend/htmlcov/
+
+      - name: Upload Test Report as Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: backend/reports/
+
+      - name: Job Summary
+        if: always()
+        run: |
+          echo '### Backend Testing Summary 🚀' >> $GITHUB_STEP_SUMMARY
+          echo '✅ Passed:   ${{ env.passed }}' >> $GITHUB_STEP_SUMMARY
+          echo '❌ Failed:   ${{ env.failed }}' >> $GITHUB_STEP_SUMMARY
+          echo '🤓 Coverage: ${{ env.coverage }}%' >> $GITHUB_STEP_SUMMARY
+
+      - name: Stop containers
+        if: always()
+        run: docker compose -f docker-compose.test.yml down
+
+  security-and-licence:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # SBOM generation
+      - name: Install Syft
+        run: curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Generate SBOM for Each Docker Image
+        run: |
+          for service in $(docker compose config --services); do
+            image=$(docker compose images -q $service)
+            echo "Scanning $image"
+            syft $image -o spdx-json > sbom-$service.json
+          done
+
+      - name: Upload SBOM Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sbom
+          path: sbom.json
+
+      # Vulnerability scanning
+      - name: Install Grype
+        run: curl -sSfL https://raw.githubusercontent.com/anchore/grype/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Scan for Vulnerabilities
+        run: grype sbom:sbom.json --fail-on critical
+
+      # Check License Compliance using GitHub's Licensee tool
+      - name: Install Licensee
+        run: sudo apt-get install licensee
+
+      - name: Run License Compliance Check
+        run: |
+          licensee detect . --json > license-report.json
+          cat license-report.json
+
+      - name: Fail if Unauthorized Licenses Found
+        run: |
+          if grep -q '"spdx_id": "GPL-3.0"' license-report.json; then
+            echo "❌ GPL-3.0 license detected! Failing build."
+            exit 1
+          fi
