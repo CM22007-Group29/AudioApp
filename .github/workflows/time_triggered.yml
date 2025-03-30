@@ -109,7 +109,7 @@ jobs:
 
   security-and-licence:
     runs-on: ubuntu-latest
-    needs: [build-frontend]
+    needs: [build-frontend, test-backend]
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
