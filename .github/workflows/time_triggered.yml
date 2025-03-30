@@ -129,7 +129,6 @@ jobs:
       - name: Load images
         run: |
           docker load --input ${{ runner.temp }}/frontend.tar
-          docker load --input ${{ runner.temp }}/backend.tar
 
       # SBOM generation
       - name: Install Syft
