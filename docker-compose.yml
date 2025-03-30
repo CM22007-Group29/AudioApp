@@ -1,19 +1,23 @@
 services:
   backend:
+    image: backend
     build:
       context: .
       dockerfile: backend/Dockerfile
     working_dir: /main
-    command: python3 -m backend
+    # command: python3 -m backend
     ports:
       - "4040:4040"
     volumes:
       - .:/main
       - ./backend/sqlite-data:/main/backend/sqlite-data
+      - ./backend/reports:/main/backend/reports
+      - ./backend/htmlcov:/main/backend/htmlcov
 
   frontend:
+    image: frontend
     build: frontend
-    command: npm run preview
+    # command: npm run preview
     ports:
       - "4173:4173"
     volumes:

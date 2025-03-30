@@ -40,7 +40,7 @@ jobs:
       - name: Generate SBOM for Each Docker Image
         run: |
           for service in $(docker compose config --services); do
-            image=$(docker compose images -q $service)
+            image=$(docker images -q $service)
             if [ -z "$image" ]; then
               echo "No image found for $service, skipping SBOM generation."
             else
@@ -62,7 +62,7 @@ jobs:
       - name: Scan Each Docker Image for Vulnerabilities
         run: |
           for service in $(docker compose config --services); do
-            image=$(docker compose images -q $service)
+            image=$(docker images -q $service)
             if [ -z "$image" ]; then
               echo "No image found for $service, skipping SBOM generation."
             else
@@ -78,7 +78,7 @@ jobs:
       - name: Check Licenses in Docker Images
         run: |
           for service in $(docker compose config --services); do
-            image=$(docker compose images -q $service)
+            image=$(docker images -q $service)
             if [ -z "$image" ]; then
               echo "No image found for $service, skipping SBOM generation."
             else
