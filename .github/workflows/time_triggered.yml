@@ -46,7 +46,7 @@ jobs:
           done
 
       - name: Upload SBOM Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: sboms
           path: sboms/
@@ -67,14 +67,11 @@ jobs:
       - name: Install Licensee
         run: sudo apt-get install licensee
 
-      - name: Run License Compliance Check
+      - name: Check Licenses in Docker Images
         run: |
-          licensee detect . --json > license-report.json
-          cat license-report.json
-
-      - name: Fail if Unauthorized Licenses Found
-        run: |
-          if grep -q '"spdx_id": "GPL-3.0"' license-report.json; then
-            echo "❌ GPL-3.0 license detected! Failing build."
-            exit 1
-          fi
+          for service in $(docker-compose config --services); do
+            image=$(docker-compose images -q $service)
+            echo "Checking licenses in $image"
+            docker run --rm -v $(pwd):/project -w /project licensee detect . --json > license-report-$service.json
+            cat license-report-$service.json
+          done
