@@ -127,7 +127,7 @@ jobs:
           path: ${{ runner.temp }}
 
       - name: Load images
-        run:
+        run: |
           docker load --input ${{ runner.temp }}/frontend.tar
           docker load --input ${{ runner.temp }}/backend.tar
 
