@@ -1,19 +1,30 @@
-import { createContext, ReactNode, useContext, useState } from "react";
+import { ReactNode, useState } from "react";
+import { AuthContext } from "./AuthContext";
+import { User } from "../types/User";
+import { login as api_login, logout as api_logout } from "../services/authService";
 
-// Define authentication context
-interface AuthContextType {
-  user: string | null;
-  login: (username: string) => void;
-  logout: () => void;
-}
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+  const login = (username: string) => {
+    api_login(username).then((responce) => {
+      setUser(responce)
+    });
+  };
 
-const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<string | null>(null);
-
-  const login = (username: string) => setUser(username);
-  const logout = () => setUser(null);
+  const logout = () => {
+    // TODO: Doesn't work! Server error
+    if (user) {
+      api_logout(user.id).then((responce) => {
+        if (responce == 400) {
+          console.log("Log out failed!");
+        }
+        else {
+          setUser(null);
+        }
+      });
+    }
+  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>
@@ -21,14 +32,3 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-
-const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
-  return context;
-};
-
-export { AuthProvider, useAuth };
-

@@ -71,7 +71,7 @@ def user_detail(user_id):
             json_response(None, 404)
 
 
-@api.route("/users/<int:user_id>/preferences", methods=["GET", "POST", "DELETE"])
+@api.route("/users/<int:user_id>/preferences", methods=["GET", "POST", "DELETE", "PUT"])
 def user_preferences(user_id):
     """
         Access user preferences with /api/users/{user_id}/preferences
@@ -105,6 +105,14 @@ def user_preferences(user_id):
             return jsonify({"message": f"UserPreference {deleted_id} deleted"})  
         else:
             json_response(None, 404)
+    
+    elif request.method == "PUT":
+        user = User.get_by_id(user_id)
+        if not user:
+            return json_response(None, 404)
+
+        updated_prefs = user.update_preferences(request.json)
+        return json_response(updated_prefs.json(), 200)
 
 
 
@@ -155,7 +163,7 @@ def audio(user_id):
 
         dir_path = os.path.dirname(audio_entry.file_path)
         file_name = os.path.basename(audio_entry.file_path)
-        return send_from_directory(directory=dir_path, path=file_name)
+        return send_from_directory(directory=dir_path, path=file_name, mimetype="audio/mpeg")
 
     return json_response(None, 404)
 
@@ -188,13 +196,15 @@ def process_audio(user_id):
         if not user:
             return json_response(None, 404)
 
-        audio_entry = user.get_audio("processed")
+        audio_entry = user.get_audio()
+
+        # audio_entry = user.get_audio("processed")
         if not audio_entry or not os.path.exists(audio_entry.file_path):
             return json_response(None, 404)
 
         dir_path = os.path.dirname(audio_entry.file_path)
         file_name = os.path.basename(audio_entry.file_path)
-        return send_from_directory(directory=dir_path, path=file_name)
+        return send_from_directory(directory=dir_path, path=file_name, mimetype="audio/mpeg")
 
     return json_response(None, 404)
 
@@ -204,7 +214,8 @@ def process_audio(user_id):
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method=='POST':
-        username = request.form.get('username')
+        # username = request.form.get('username')
+        username = request.get_json()["username"]
         # password = request.form.get('password')
         # remember = True if request.form.get('remember') else False
 
@@ -215,10 +226,10 @@ def login():
             return redirect(url_for('auth.login'))'''
         if not user:
             return json_response(None, 404)
-
         login_user(user)
-
         return json_response({'user_id': user.id})
+    else:
+        return json_response({"message":'Please log in'}, 200)
     
 
 @auth.route('/signup', methods=['POST'])
@@ -248,7 +259,7 @@ def logout(user_id):
         user = User.get_by_id(user_id)
         if user:
             logout_user(user)
-            return json_response(None, 200)
+            return jsonify({"message": f"User {user_id} logged out"}), 200
         
         return json_response(None, 404)
 
@@ -275,9 +286,9 @@ def get_timestamps(user_id):
         formatted_data = [
             {
                 "word": item[0],
-                "start_time": item[1][0],  # First element of the timestamp tuple
-                "end_time": item[1][1],    # Second element of the timestamp tuple
-                "is_removed": item[2]
+                "startTime": item[1][0],  # First element of the timestamp tuple
+                "endTime": item[1][1],    # Second element of the timestamp tuple
+                "isRemoved": item[2]
             }
             for item in word_timestamps
         ]

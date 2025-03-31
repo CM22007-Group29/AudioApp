@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 // Backend api url
-const API_BASE_URL = "http://0.0.0.0:4040/api"
+const API_BASE_URL = "http://127.0.0.1:4040/api"
 
 // creates generic instance of api call
 const api = axios.create({
