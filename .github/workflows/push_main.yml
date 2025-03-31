@@ -129,7 +129,6 @@ jobs:
       - name: Load images
         run: |
           docker load --input ${{ runner.temp }}/frontend.tar
-          docker load --input ${{ runner.temp }}/backend.tar
 
       # SBOM generation
       - name: Install Syft
@@ -148,11 +147,11 @@ jobs:
             fi
           done
 
-      #- name: Upload SBOM Artifact
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: sboms
-      #    path: sboms/
+      - name: Upload SBOM Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sboms
+          path: sboms/
 
       # Vulnerability scanning
       - name: Install Grype
