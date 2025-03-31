@@ -166,7 +166,8 @@ jobs:
               echo "No image found for $service, skipping SBOM generation."
             else
               echo "Scanning vulnerabilities in $service"
-              results=$(grype sbom:sboms/$service.json --fail-on critical)
+              # results=$(grype sbom:sboms/$service.json --fail-on critical)
+              results=$(grype $image --fail-on critical)
               echo "#### $service" >> $GITHUB_STEP_SUMMARY
               echo "\`\`\`$results" >> $GITHUB_STEP_SUMMARY
               echo "\`\`\`" >> $GITHUB_STEP_SUMMARY
