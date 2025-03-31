@@ -13,6 +13,7 @@ login_manager = LoginManager()
 def create_app():
     # init app
     app = Flask(__name__)
+    app.secret_key = os.getenv("SECRET_KEY", "key")
 
     app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///coursework.db"
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -23,7 +24,7 @@ def create_app():
     db.init_app(app)
 
     # allows us to communicate with frontend
-    CORS(app)
+    CORS(app, origins="*")
 
     # initialises login manager
     login_manager.login_view = 'auth.login'
@@ -35,6 +36,16 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+
+        user = {"email": 'test@gmail.com', "username": 'test', "password": 'test'}
+
+        user_instance = User().get_by_username(username = "test")
+        print(user_instance)
+
+        if user_instance is not None:
+            user_instance.update(user_instance.id, user)
+        else:
+            User.create(user)
 
     @login_manager.user_loader
     def load_user(user_id):

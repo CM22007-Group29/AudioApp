@@ -2,7 +2,7 @@ import { AppBar, Button, IconButton, Stack, Toolbar } from "@mui/material";
 import React from "react";
 import { Link } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../../context/AuthContext";
 
 const Nav: React.FC = () => {
   const { user, logout } = useAuth();

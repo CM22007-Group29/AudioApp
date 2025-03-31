@@ -4,24 +4,24 @@ import Checkbox from '@mui/material/Checkbox';
 const label = { inputProps: { 'aria-label': 'Checkbox' } };
 
 // Define the props type
-interface NormalisationCheckboxProps {
-  check_normalisation: boolean;
-  setCheckNormalisation: (value: boolean) => void;
+interface ThresholdProps {
+  check_threshold: boolean;
+  setCheckThreshold: (value: boolean) => void;
 }
 
-export default function NormalisationCheckbox({
-  check_normalisation,
-  setCheckNormalisation,
-}: NormalisationCheckboxProps) {
+export default function ThresholdCheckbox({
+  check_threshold,
+  setCheckThreshold,
+}: ThresholdProps) {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setCheckNormalisation(event.target.checked);
+    setCheckThreshold(event.target.checked);
   };
 
   return (
     <Checkbox
       {...label}
-      checked={check_normalisation}
+      checked={check_threshold}
       onChange={handleChange}
       sx={{
         color: "gray",
