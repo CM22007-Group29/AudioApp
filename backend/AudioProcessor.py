@@ -73,9 +73,11 @@ class AudioProcessingService:
         silence_length: int for minimum length of silence to be removed (in seconds)
         silence_threshold: int for the maximum level of decibels audio can be to be considered silence
         """
-        
+        print(timestamps)
         if timestamps:
+            print(self.audio.duration_seconds)
             self.audio = self.cutAudio(timestamps)
+            print(self.audio.duration_seconds)
         
         if silence_length > 0:
             self.audio = self.removeSilences(silence_length, silence_threshold)

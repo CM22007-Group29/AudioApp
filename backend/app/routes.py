@@ -185,16 +185,22 @@ def process_audio(user_id):
             return json_response(None, 404)
         
         data = request.get_json()
+
         
         words = []
         timestamps = []
-        for word in data["word_timestamps"]:
-            if word["isRemoved"]:
-                words.append(word["word"])
-                timestamps.append((word["startTime"], word["endTime"]))
+        for word in data:
+            try:
+                if word["isRemoved"]:
+                    words.append(word["word"])
+                    timestamps.append((word["startTime"], word["endTime"]))
+            except KeyError:
+                return json_response({"error": "Invalid data"}, 400)
 
         worker = WorkerProcess(user_id, audio_entry.file_path)
+        print(timestamps)
         output_path, timestamps = worker.process_audio_for_user(timestamps)
+        print(output_path, timestamps)
 
         # upload to db
         user.upload_processed_audio({"file_path": output_path})

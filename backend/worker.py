@@ -26,7 +26,7 @@ class WorkerProcess():
         """
         return self.processor.getWordsTimestamps()
 
-    def process_audio_for_user(self):
+    def process_audio_for_user(self, cut_timestamps=None):
         """
         Process the audio file based on the user's editing preferences:
         - Fetch preferences from the database.
@@ -45,7 +45,10 @@ class WorkerProcess():
 
         # Use the STT (Speech-to-Text) to get words and timestamps and then
         # determine the cut points based on the user's forbidden words and swears.
-        self.cut_timestamps = self.processor.getCutstamps()
+        if cut_timestamps is None:
+            self.cut_timestamps = self.processor.getCutstamps()
+        else:
+            self.cut_timestamps = cut_timestamps
 
         # Extract processing parameters from user preferences.
         # - prefs.normalise is a Boolean whether to normalize audio.
@@ -70,37 +73,37 @@ class WorkerProcess():
 
         return output_path, self.cut_timestamps
     
-    def process_audio_for_user(self,cut_timestamps):
-        """
-        Process the audio file based on the user's editing preferences:
-        - Fetch preferences from the database.
-        - Transcribe the audio to get words and timestamps.
-        - Remove segments based on forbidden words (or extra words) in the preferences.
-        - Apply additional processing such as silence removal or normalization.
-        - Save the processed audio to a new file.
-        """
-        # Fetch user preferences from the database.
-        prefs = self.get_user_preferences(self.user_id)
+    # def process_audio_for_user(self,cut_timestamps):
+    #     """
+    #     Process the audio file based on the user's editing preferences:
+    #     - Fetch preferences from the database.
+    #     - Transcribe the audio to get words and timestamps.
+    #     - Remove segments based on forbidden words (or extra words) in the preferences.
+    #     - Apply additional processing such as silence removal or normalization.
+    #     - Save the processed audio to a new file.
+    #     """
+    #     # Fetch user preferences from the database.
+    #     prefs = self.get_user_preferences(self.user_id)
 
-        # Extract processing parameters from user preferences.
-        # - prefs.normalise is a Boolean whether to normalize audio.
-        # - prefs.silence_length is an int (in seconds) for minimum silence length to remove.
-        # - prefs.silence_threshold is an int (in dB) threshold for silence.
-        normalize = prefs.normalise
-        silence_length = prefs.silence_length if prefs.silence_length is not None else -1
-        silence_threshold = prefs.silence_threshold if prefs.silence_threshold is not None else -40
+    #     # Extract processing parameters from user preferences.
+    #     # - prefs.normalise is a Boolean whether to normalize audio.
+    #     # - prefs.silence_length is an int (in seconds) for minimum silence length to remove.
+    #     # - prefs.silence_threshold is an int (in dB) threshold for silence.
+    #     normalize = prefs.normalise
+    #     silence_length = prefs.silence_length if prefs.silence_length is not None else -1
+    #     silence_threshold = prefs.silence_threshold if prefs.silence_threshold is not None else -40
 
-        # Process the audio: cut out segments, remove silences, and normalize if required.
-        self.processor.processAudio(timestamps=cut_timestamps,
-                                normalize=normalize,
-                                silence_length=silence_length,
-                                silence_threshold=silence_threshold)
+    #     # Process the audio: cut out segments, remove silences, and normalize if required.
+    #     self.processor.processAudio(timestamps=cut_timestamps,
+    #                             normalize=normalize,
+    #                             silence_length=silence_length,
+    #                             silence_threshold=silence_threshold)
 
-        # Define an output file path.
-        output_path = os.path.join(os.path.dirname(self.audio_file_path), f"processed_output.{self.audio_obj.getFileType()}")
+    #     # Define an output file path.
+    #     output_path = os.path.join(os.path.dirname(self.audio_file_path), f"processed_output.{self.audio_obj.getFileType()}")
 
-        # Save the processed audio.
-        self.processor.saveFile(output_path)
-        print(f"Processed audio saved to {output_path}")
+    #     # Save the processed audio.
+    #     self.processor.saveFile(output_path)
+    #     print(f"Processed audio saved to {output_path}")
 
-        return output_path, self.cut_timestamps
+    #     return output_path, cut_timestamps
