@@ -1,6 +1,4 @@
 import { useRef, useState, useEffect } from "react";
-import { useAuth } from "../context/AuthContext";
-import { getTimestamps } from "../services/audioService";
 import { AudioContext, AudioState } from "./AudioContext";
 
 const getAmplitudeData = () => {
@@ -8,7 +6,7 @@ const getAmplitudeData = () => {
 }
 
 export const AudioContextProvider = ({ children }: { children: React.ReactNode }) => {
-  const { user } = useAuth();
+  const [ audioSourceURL, setAudioSourceURL ] = useState("");
   const audio = useRef<HTMLAudioElement>(null);
   const [audioContext, setAudioContext] = useState<AudioState>({
     source: "todo/path.mp3",
@@ -22,17 +20,22 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
     },
     ampData: getAmplitudeData(),
     wordData: [],
-    setAudioContext: () => {}
+    setAudioContext: () => {},
+    loadAudio: (newUser) => {
+      if (audio.current && newUser) {
+        setAudioSourceURL(`http://localhost:4040/api/audio/${newUser.id}/process`)
+      }
+    }
   });
 
   useEffect(() => {
-    if (user) {
-      getTimestamps(user.id).then((timestamps) => {
-        setAudioContext(prev => ({ ...prev, wordData: timestamps }));
-      });
-      console.log("DONE!")
+    if (audio.current) {
+      audio.current.load();
+      setTimeout(() => {
+        setAudioContext(prev => ({ ...prev }));
+      }, 500)
     }
-  }, [user]);
+  }, [audioSourceURL])
 
   // Set setAudioContext function in the state (so it's available in context)
   useEffect(() => {
@@ -50,24 +53,24 @@ export const AudioContextProvider = ({ children }: { children: React.ReactNode }
   }, []); // run once on mount
 
   // Update currentTime at interval without causing an infinite loop
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (audio.current) {
-        setAudioContext(prev => ({
-          ...prev,
-          currentTime: audio.current!.currentTime
-        }));
-      }
-    }, 100);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     if (audio.current) {
+  //       setAudioContext(prev => ({
+  //         ...prev,
+  //         currentTime: audio.current!.currentTime
+  //       }));
+  //     }
+  //   }, 100);
 
-    return () => clearInterval(interval);
-  }, []); // run once on mount
+  //   return () => clearInterval(interval);
+  // }, []); // run once on mount
 
   return (
     <AudioContext.Provider value={{ ...audioContext, setAudioContext }}>
       <audio ref={audio}>
         <source 
-          src={user ? `http://localhost:4040/api/audio/${user.id}/process` : ""}
+          src={audioSourceURL}
           type="audio/mpeg"
         />  
       </audio>
