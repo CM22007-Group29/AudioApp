@@ -272,6 +272,7 @@ def get_timestamps(user_id):
         GET /audio/<int:user_id>/timestamps gets words and timestamps
     """
     if request.method == "GET":
+        return jsonify({"word_timestamps":[{"endTime":949,"isRemoved":False,"startTime":729,"word":"hey,"},{"endTime":1630,"isRemoved":False,"startTime":1490,"word":"i'm"},{"endTime":1730,"isRemoved":False,"startTime":1670,"word":"an"},{"endTime":2251,"isRemoved":False,"startTime":1830,"word":"ai,"},{"endTime":2471,"isRemoved":False,"startTime":2391,"word":"and"}]}), 200
         user = User.get_by_id(user_id)
         if not user:
             return json_response(None, 404)
