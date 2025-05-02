@@ -204,6 +204,7 @@ def process_audio(user_id):
 
         # upload to db
         user.upload_processed_audio({"file_path": output_path})
+        print(json_response({"output_path": output_path, "timestamps": timestamps}, 201))
         return json_response({"output_path": output_path, "timestamps": timestamps}, 201)
     
     elif request.method == "GET":
