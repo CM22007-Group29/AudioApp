@@ -10,7 +10,7 @@ class AudioProcessingService:
         self.audio = audioFile.loadFile()
         self.fileType = audioFile.getFileType()
         self.audio_file = audioFile
-        self.whisper = SpeachToText()
+        # self.whisper = SpeachToText()
         self.word_remover = WordRemover()
 
     def cutAudio(self, timestamps):
@@ -86,10 +86,12 @@ class AudioProcessingService:
         if normalize:
             self.audio = self.normalizeAudio()
         
+        self.saveFile("outputHere.mp3")
+        
         return self.audio
 
     def saveFile(self, outputFilePath):
-        """
+        """s
         Exports the processed audio to a file.
         """
         self.audio.export(outputFilePath, format=self.fileType)

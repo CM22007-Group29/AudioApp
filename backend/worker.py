@@ -55,7 +55,7 @@ class WorkerProcess():
         # - prefs.silence_length is an int (in seconds) for minimum silence length to remove.
         # - prefs.silence_threshold is an int (in dB) threshold for silence.
         normalize = prefs.normalise
-        silence_length = prefs.silence_length if prefs.silence_length is not None else -1
+        silence_length = prefs.silence_length if prefs.silence_length is not None else 1
         silence_threshold = prefs.silence_threshold if prefs.silence_threshold is not None else -40
 
         # Process the audio: cut out segments, remove silences, and normalize if required.
@@ -65,7 +65,7 @@ class WorkerProcess():
                                 silence_threshold=silence_threshold)
 
         # Define an output file path.
-        output_path = os.path.join(os.path.dirname(self.audio_file_path), f"processed_output.{self.audio_obj.getFileType()}")
+        output_path = os.path.join(os.path.dirname(self.audio_file_path), f"processed_output1.{self.audio_obj.getFileType()}")
 
         # Save the processed audio.
         self.processor.saveFile(output_path)

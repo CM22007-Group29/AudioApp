@@ -20,6 +20,7 @@ export const getAudio = async (user_id: number): Promise<Blob> => {
 };
 
 export const processAudio = async (user_id: number, words: Word[]): Promise<AudioProcessing> => {
+    console.log("Processing audio with words:", words);
     const response = await api.post(`audio/${user_id}/process`, words);
     return response.data
 }

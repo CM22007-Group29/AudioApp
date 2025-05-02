@@ -15,6 +15,7 @@ function Download() {
 
   const download = () => {
     if (audioContext) {
+      console.log("wordData", audioContext.wordData);
       processAudio(user.id, audioContext.wordData).then(() => {
         getProcessedAudio(user.id).then((blob) => {
           const downloadUrl = window.URL.createObjectURL(blob);
