@@ -19,13 +19,15 @@ export const getAudio = async (user_id: number): Promise<Blob> => {
   return response.data;
 };
 
-export const processAudio = async (user_id: number): Promise<AudioProcessing> => {
-    const response = await api.get(`audio/${user_id}/process`)
+export const processAudio = async (user_id: number, words: Word[]): Promise<AudioProcessing> => {
+    const response = await api.post(`audio/${user_id}/process`, words);
     return response.data
 }
 
 export const getProcessedAudio = async (user_id: number): Promise<File> => {
-    const response = await api.get(`audio/${user_id}/process`)
+    const response = await api.get(`audio/${user_id}/process`, {
+    responseType: 'blob'
+  });
     return response.data
 }
 

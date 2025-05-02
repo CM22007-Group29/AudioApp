@@ -3,7 +3,6 @@ import Button from '@mui/material/Button';
 import FolderIcon from '@mui/icons-material/Folder';
 import { useAuth } from '../../../context/AuthContext';
 import { getAudio } from '../../../services/audioService';
-import { useAudioContext } from '../../AudioContext';
 
 const VisuallyHiddenInput = styled('input')({
   clip: 'rect(0 0 0 0)',
@@ -20,7 +19,6 @@ const VisuallyHiddenInput = styled('input')({
 export default function InputFileUpload({ setFileUploaded }: { setFileUploaded: (uploaded: boolean) => void }) {
   const { user } = useAuth();
   const userId = user?.id;
-  const audioContext = useAudioContext();
 
   if (!userId) {
     throw new Error("User ID not found");
@@ -44,22 +42,6 @@ export default function InputFileUpload({ setFileUploaded }: { setFileUploaded: 
       if (response.ok) {
         setFileUploaded(true);
         getAudio(user.id)
-          .then((audioBlob) => {
-            console.log("Audio Blob received:", audioBlob);
-            console.log("Is it a Blob?", audioBlob instanceof Blob);
-            const url = URL.createObjectURL(audioBlob);
-            if (!audioContext) {
-              throw new Error("Audio context not found");
-            }
-            audioContext.setAudioContext(prev => ({
-              ...prev,
-              source: url
-            }));
-            
-            // Create a temporary HTMLAudioElement and play it:
-            // const audioPlayer = new Audio(url);
-            // audioPlayer.play().catch((err) => console.error("Playback error:", err));
-          })
           .catch((error) => {
             console.error("Error retrieving audio:", error);
           });

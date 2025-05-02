@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import { User } from "../types/User";
 
 export type Word = {
   word: string;
@@ -16,6 +17,7 @@ export type AudioState = {
     ampData: number[];
     wordData: Word[];
     setAudioContext: React.Dispatch<React.SetStateAction<AudioState>>;
+    loadAudio: (newUser: User) => void;
 }
 
 export const AudioContext = createContext<AudioState | null>(null);

@@ -3,11 +3,14 @@ import { AudioState, useAudioContext, Word } from "./AudioContext";
 import { Box, Stack } from "@mui/system";
 import { Button, IconButton, Typography } from "@mui/material";
 import { VolumeUp, VolumeOff } from "@mui/icons-material";
+import { useAuth } from "../context/AuthContext";
 
 import "./Waveform.css"
+import { getTimestamps } from "../services/audioService";
 
 export const Waveform = () => {
   const audio = useAudioContext()
+  const { user } = useAuth();
 
   const fullWaveformWidth = useMemo(() => {
     return (audio?.audioRef.current?.duration ?? 0) * 500
@@ -41,6 +44,17 @@ export const Waveform = () => {
     const progress = pixels / fullWaveformWidth;
     return progress * (audio?.audioRef.current?.duration);
   }, [audio, fullWaveformWidth]);
+
+  useEffect(() => {
+    // TODO: why does audio keep updating? must fix!
+    if (user && audio) {
+      audio.loadAudio(user);
+      getTimestamps(user.id).then((timestamps) => {
+        audio?.setAudioContext(prev => ({ ...prev, wordData: timestamps }));
+        console.log("Got timestamps!", timestamps)
+      });
+    }
+  }, [user]);
 
   // Draw the visible part of the waveform
   useEffect(() => {
@@ -203,6 +217,8 @@ export const Waveform = () => {
       return;
     }
 
+    console.log(audio.wordData)
+
     // Have to set state like this to trigger a redraw
     audio.setAudioContext?.((prevAudio: AudioState) => ({
       ...prevAudio,
@@ -210,7 +226,6 @@ export const Waveform = () => {
         i === wordIndex ? { ...word, isRemoved: !word.isRemoved } : word
       ),
     }));
-
     // TODO: Send this to backend!
   }, [audio]);
 
@@ -295,7 +310,7 @@ export const Waveform = () => {
                           color: "black"
                         }
                       }>
-                        {word.word}
+                        {word.word + " " + word.startTime}
                       </Typography>
                     </Button>
                   </div>

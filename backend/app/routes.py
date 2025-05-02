@@ -183,9 +183,24 @@ def process_audio(user_id):
         audio_entry = user.get_audio()
         if not audio_entry or not os.path.exists(audio_entry.file_path):
             return json_response(None, 404)
+        
+        data = request.get_json()
+
+        
+        words = []
+        timestamps = []
+        for word in data:
+            try:
+                if word["isRemoved"]:
+                    words.append(word["word"])
+                    timestamps.append((word["startTime"], word["endTime"]))
+            except KeyError:
+                return json_response({"error": "Invalid data"}, 400)
 
         worker = WorkerProcess(user_id, audio_entry.file_path)
-        output_path, timestamps = worker.process_audio_for_user()
+        print(timestamps)
+        output_path, timestamps = worker.process_audio_for_user(timestamps)
+        print(output_path, timestamps)
 
         # upload to db
         user.upload_processed_audio({"file_path": output_path})
@@ -296,5 +311,7 @@ def get_timestamps(user_id):
         print(jsonify({"word_timestamps": formatted_data}))
 
         return jsonify({"word_timestamps": formatted_data}), 200
-    
+        
+                
+        
     return json_response(None, 404)

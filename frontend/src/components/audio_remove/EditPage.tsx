@@ -24,6 +24,7 @@ function EditPage() {
   const [checkedSilenceLength, setCheckedSilenceLength] = React.useState(false);
   const [extraWords, setExtraWords] = React.useState("");
   const [hasPreferences, setHasPreferences] = React.useState(false);
+  const [preferenceSaved, setPreferenceSaved] = React.useState(false);
 
   // Fetch preferences on mount
   React.useEffect(() => {
@@ -62,11 +63,16 @@ function EditPage() {
       });
       if (response.ok) {
         console.log("Preferences saved successfully");
+        setPreferenceSaved(true);
+        // Hide message after 3 seconds
+        setTimeout(() => setPreferenceSaved(false), 3000);
       } else {
         console.error("Failed to save preferences");
+        setPreferenceSaved(false);
       }
     } catch (error) {
       console.error("Error saving preferences:", error);
+      setPreferenceSaved(false);
     }
   };
 
@@ -197,6 +203,19 @@ function EditPage() {
           >
             Save Preferences
           </Button>
+        </Grid>
+
+        {/* Confirmation Message */}
+        <Grid size={9.2} sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+          {preferenceSaved && (
+            <Box sx={{ 
+              color: "lightgreen", 
+              fontWeight: "bold",
+              animation: "fadeIn 0.5s" 
+            }}>
+              Preferences saved!
+            </Box>
+          )}
         </Grid>
       </Grid>
     </Box>
