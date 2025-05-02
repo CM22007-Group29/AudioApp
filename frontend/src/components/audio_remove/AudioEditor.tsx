@@ -6,7 +6,6 @@ import { Waveform } from "../Waveform"
 function AudioEditor() {
     return (
       <Container sx={{ marginTop: 1 }}>
-        <AudioContextProvider>
           <Stack direction="column" gap={2}>
             <Transport />
             <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 1 }}>
@@ -14,7 +13,6 @@ function AudioEditor() {
             </Typography>
             <Waveform />
           </Stack>
-        </AudioContextProvider>
       </Container>
     )
 }
