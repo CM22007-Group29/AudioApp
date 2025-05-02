@@ -310,7 +310,7 @@ export const Waveform = () => {
                           color: "black"
                         }
                       }>
-                        {word.word + " " + word.startTime}
+                        {word.word}
                       </Typography>
                     </Button>
                   </div>
@@ -323,15 +323,16 @@ export const Waveform = () => {
       <Box
         sx={{
           display: "flex",
+          flexWrap: "wrap",
           width: "100%"
         }}
         gap={0}
       >
         {audio?.wordData.map((word, i) =>
-          <div key={i} style={{ textAlign: "center" }}>
+          <div key={i} style={{ textAlign: "left" }}>
             <Button
               onClick={moveToWordAndScroll(word)}
-              style={{ pointerEvents: "all", margin: 0 }}
+              style={{ pointerEvents: "all", margin: 0, textAlign: "left"}}
             >
               <Typography 
                 sx={{
