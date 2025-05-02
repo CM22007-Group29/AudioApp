@@ -82,7 +82,7 @@ export default function HorizontalLinearStepper() {
           >
             Back
           </Button>
-          <Button 
+          activeStep === 0 && !fileUploaded<Button 
             onClick={handleNext} 
             disabled={activeStep === 0 && !fileUploaded}
             sx={{ mr: 10, color: '#f5f5f5' }}

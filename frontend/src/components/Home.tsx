@@ -12,7 +12,7 @@ function Home() {
             <p className="mt-8 text-gray-700 dark:text-gray-300">Remove filler words and profanities from your audio file using <strong>AI</strong>.</p>
             <div className="mt-16 flex flex-wrap justify-center gap-y-4 gap-x-6">
               <Button component={Link} to="/get-started" variant="contained" sx={{ backgroundColor: "#f2f2f2", color: 'black', borderRadius: 28}}>Get Started</Button>
-              <Button component={Link} to="/features" variant="contained" sx={{ backgroundColor: "#2e2e2e", color: 'white', borderRadius: 28}} className="rounded-full">Learn More</Button>
+              <Button component={Link} to="/features" variant="contained" sx={{ backgroundColor: "#2e2e2e", color: 'white', borderRadius: 28}} className="rounded-full">Features</Button>
             </div>
           </div>
         </div>

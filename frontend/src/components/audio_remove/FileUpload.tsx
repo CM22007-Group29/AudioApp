@@ -1,7 +1,7 @@
 import { useDropzone } from "react-dropzone";
 import { Stack, Box } from "@mui/material";
 import InputFileUpload from "./file_upload/FileUploadButton";
-import LinkUpload from "./link_upload/LinkButton";
+// import LinkUpload from "./link_upload/LinkButton";
 import { useAuth } from "../../context/AuthContext";
 
 function FileUpload({ setFileUploaded }: { setFileUploaded: (uploaded: boolean) => void }) {
@@ -76,7 +76,7 @@ function FileUpload({ setFileUploaded }: { setFileUploaded: (uploaded: boolean) 
                         </Box>
                         <Stack direction="row" spacing={2} className="w-auto justify-center">
                             <InputFileUpload setFileUploaded={setFileUploaded} />
-                            <LinkUpload />
+                            {/* <LinkUpload /> */}
                         </Stack>
                     </Stack>
                 )}

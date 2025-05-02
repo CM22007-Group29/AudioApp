@@ -135,7 +135,7 @@ function EditPage() {
         </Grid>
         <Grid size={4}>
           <p style={{ minWidth: "40px", textAlign: "center", color: "white" }}>
-            {checkedSilenceLength ? "Default" : silenceLength}
+            {checkedSilenceLength ? "Default" : silenceLength + "ms"}
           </p>
         </Grid>
         {/* Normalisation */}
