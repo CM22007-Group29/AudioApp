@@ -10,7 +10,7 @@ class AudioProcessingService:
         self.audio = audioFile.loadFile()
         self.fileType = audioFile.getFileType()
         self.audio_file = audioFile
-        # self.whisper = SpeachToText()
+        self.whisper = SpeachToText()
         self.word_remover = WordRemover()
 
     def cutAudio(self, timestamps):

@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback, useState, useMemo } from "react";
 import { AudioState, useAudioContext, Word } from "./AudioContext";
 import { Box, Stack } from "@mui/system";
-import { Button, IconButton, Typography } from "@mui/material";
+import { Button, IconButton, Typography, CircularProgress } from "@mui/material";
 import { VolumeUp, VolumeOff } from "@mui/icons-material";
 import { useAuth } from "../context/AuthContext";
 
@@ -11,6 +11,7 @@ import { getTimestamps } from "../services/audioService";
 export const Waveform = () => {
   const audio = useAudioContext()
   const { user } = useAuth();
+  const [isLoadingTimestamps, setIsLoadingTimestamps] = useState(false);
 
   const fullWaveformWidth = useMemo(() => {
     return (audio?.audioRef.current?.duration ?? 0) * 500
@@ -49,9 +50,14 @@ export const Waveform = () => {
     // TODO: why does audio keep updating? must fix!
     if (user && audio) {
       audio.loadAudio(user);
+      setIsLoadingTimestamps(true);
       getTimestamps(user.id).then((timestamps) => {
         audio?.setAudioContext(prev => ({ ...prev, wordData: timestamps }));
-        console.log("Got timestamps!", timestamps)
+        console.log("Got timestamps!", timestamps);
+        setIsLoadingTimestamps(false);
+      }).catch(error => {
+        console.error("Error loading timestamps:", error);
+        setIsLoadingTimestamps(false);
       });
     }
   }, [user]);
@@ -231,6 +237,21 @@ export const Waveform = () => {
 
   return( audio &&
     <Stack direction="column" gap={1}>
+      {isLoadingTimestamps && (
+        <Box sx={{ 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          p: 1,
+          backgroundColor: '#f5f5f5',
+          borderRadius: '4px'
+        }}>
+          <CircularProgress size={16} sx={{ mr: 1 }} />
+          <Typography variant="body2" color="text.secondary">
+            32s remaining
+          </Typography>
+        </Box>
+      )}
       <Box>
         <canvas
           ref={waveformCanvas}
